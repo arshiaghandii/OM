@@ -1,8 +1,8 @@
 package ir.tejarattrd.oms.demo.demo.Controller;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import ir.tejarattrd.oms.demo.demo.Entity.Customer;
 import ir.tejarattrd.oms.demo.demo.Service.CustomerService;
+import ir.tejarattrd.oms.demo.demo.Entity.Customer;
+
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +18,7 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Customer> registerCustomer(@Valid @RequestBody Customer customer) { // @Valid اضافه شد
         Customer savedCustomer = customerService.saveCustomer(customer);
         return ResponseEntity.ok(savedCustomer);
     }

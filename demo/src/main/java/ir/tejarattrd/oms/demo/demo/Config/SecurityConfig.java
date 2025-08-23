@@ -1,35 +1,82 @@
 package ir.tejarattrd.oms.demo.demo.Config;
 
+import ir.tejarattrd.oms.demo.demo.Service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(JwtFilter jwtFilter, CustomUserDetailsService customUserDetailsService) {
+        this.jwtFilter = jwtFilter;
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder());
+        return authenticationManagerBuilder.build();
+    }
 
+    @Bean
+    @Order(1) // اولویت اول: این فیلتر برای API ها اجرا می‌شود
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
+                .securityMatcher("/api/**") // این تنظیمات فقط برای مسیرهای /api اعمال شود
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/api/auth/**", "/css/**", "/js/**", "/images/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/auth/**").permitAll() // مسیر لاگین API باز باشد
+                        .anyRequest().authenticated() // بقیه مسیرهای API نیاز به احراز هویت دارند
                 )
-                .csrf(csrf -> csrf.disable()) // حتما برای API غیرفعال کن
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                )
-                .logout(logout -> logout.permitAll());
+                .csrf(csrf -> csrf.disable()) // غیرفعال کردن CSRF برای API ها ضروری است
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // API ها نباید Session ایجاد کنند
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // اضافه کردن فیلتر JWT
 
         return http.build();
     }
 
+    @Bean
+    @Order(2) // اولویت دوم: این فیلتر برای صفحات وب اجرا می‌شود
+    public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png").permitAll() // مسیرهای عمومی صفحات وب
+                        .anyRequest().authenticated() // بقیه صفحات نیاز به ورود دارند
+                )
+                .formLogin(form -> form
+                        .loginPage("/login") // صفحه لاگین سفارشی (اگر بسازید)
+                        .defaultSuccessUrl("/", true) // بعد از ورود موفق به صفحه اصلی برود
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .permitAll()
+                );
+
+        return http.build();
+    }
 }

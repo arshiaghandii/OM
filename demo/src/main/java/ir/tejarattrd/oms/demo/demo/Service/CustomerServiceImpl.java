@@ -4,7 +4,6 @@ import ir.tejarattrd.oms.demo.demo.Entity.Customer;
 import ir.tejarattrd.oms.demo.demo.Repository.CustomerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -18,7 +17,6 @@ public class CustomerServiceImpl implements CustomerService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
@@ -30,30 +28,34 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
     }
 
+    @Override // متد save حالا استاندارد است
     public Customer saveCustomer(Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customerRepository.save(customer); // فقط save بدون return عدد
-        return customer; // اینو برگردون
+        return customerRepository.save(customer); // JPA خودش موجودیت ذخیره شده را برمی‌گرداند
     }
-    @Override
-    public Customer updateCustomer(Long id, Customer customer) {
-        Customer existing = getCustomerById(id);
-        existing.setFirst_name(customer.getFirst_name());
-        existing.setLast_name(customer.getLast_name());
-        existing.setEmail(customer.getEmail());
-        existing.setPhone(customer.getPhone());
 
-        if (customer.getPassword() != null && !customer.getPassword().isEmpty()) {
-            existing.setPassword(passwordEncoder.encode(customer.getPassword()));
+    @Override
+    public Customer updateCustomer(Long id, Customer customerDetails) {
+        Customer existingCustomer = getCustomerById(id);
+        existingCustomer.setFirst_name(customerDetails.getFirst_name());
+        existingCustomer.setLast_name(customerDetails.getLast_name());
+        existingCustomer.setEmail(customerDetails.getEmail());
+        existingCustomer.setPhone(customerDetails.getPhone());
+
+        // اگر رمز عبور جدیدی ارسال شده بود، آن را هش کن
+        if (customerDetails.getPassword() != null && !customerDetails.getPassword().isEmpty()) {
+            existingCustomer.setPassword(passwordEncoder.encode(customerDetails.getPassword()));
         }
 
-        return customerRepository.update(existing);
+        return customerRepository.save(existingCustomer); // متد save برای آپدیت هم استفاده می‌شود
     }
 
     @Override
     public void deleteCustomer(Long id) {
-        customerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + id));
+        // ابتدا مطمئن شو که مشتری وجود دارد
+        if (!customerRepository.existsById(id)) {
+            throw new RuntimeException("Customer not found with id: " + id);
+        }
         customerRepository.deleteById(id);
     }
 }
