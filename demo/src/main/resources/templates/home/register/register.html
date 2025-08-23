@@ -71,6 +71,12 @@
             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-text"></p>
         </div>
 
+        <div>
+            <label for="confirmPassword">تکرار رمز عبور</label>
+            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required
+                   th:classappend="${#fields.hasErrors('global')} ? 'error-field' : ''" />
+        </div>
+
         <button type="submit">ثبت‌نام</button>
 
         <div class="links">
@@ -79,6 +85,35 @@
         </div>
     </form>
 </div>
+<script>
+    const form = document.getElementById('registerForm');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const errorMessageDiv = document.getElementById('js-error-message');
 
+    form.addEventListener('submit', function(event) {
+        // مخفی کردن پیام خطا در هر بار تلاش
+        errorMessageDiv.style.display = 'none';
+        errorMessageDiv.textContent = '';
+
+        // چک کردن برابری رمزها
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            // جلوگیری از ارسال فرم
+            event.preventDefault();
+
+            // نمایش پیام خطا
+            errorMessageDiv.textContent = 'رمز عبور و تکرار آن یکسان نیستند.';
+            errorMessageDiv.style.display = 'block';
+
+            // قرمز کردن کادرها
+            passwordInput.classList.add('error-field');
+            confirmPasswordInput.classList.add('error-field');
+        } else {
+            // اگر رمزها درست بود، کلاس خطا را حذف کن
+            passwordInput.classList.remove('error-field');
+            confirmPasswordInput.classList.remove('error-field');
+        }
+    });
+</script>
 </body>
 </html>
