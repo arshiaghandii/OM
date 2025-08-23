@@ -20,7 +20,8 @@ public class AuthService {
 
     public String loginAndGetToken(String usernameOrEmail, String rawPassword) {
         // پیدا کردن کاربر با یوزرنیم یا ایمیل
-        Customer customer = customerRepository.findByUsernameOrEmail(usernameOrEmail)
+        // **اصلاح کلیدی:** ورودی usernameOrEmail به عنوان هر دو پارامتر ارسال می‌شود
+        Customer customer = customerRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new RuntimeException("کاربری با این نام یا ایمیل وجود ندارد"));
 
         // بررسی پسورد

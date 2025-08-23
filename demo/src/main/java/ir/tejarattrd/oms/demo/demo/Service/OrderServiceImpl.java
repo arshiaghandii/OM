@@ -5,9 +5,8 @@ import ir.tejarattrd.oms.demo.demo.Repository.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ir.tejarattrd.oms.demo.demo.Service.OrderService;
 import java.util.List;
-/*-------------------------------------------------------------------------------- */
+import java.time.LocalDateTime;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -30,10 +29,7 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderById(Long id) {
         logger.info("Fetching order with id: {}", id);
         return orderRepository.findById(id)
-                .orElseThrow(() -> {
-                    logger.error("Order not found with id: {}", id);
-                    return new RuntimeException("Order not found with id: " + id);
-                });
+                .orElseThrow(() -> new RuntimeException("سفارشی با شناسه " + id + " پیدا نشد"));
     }
 
     @Override
@@ -45,52 +41,39 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order saveOrder(Order order) {
         logger.info("Saving new order for customer id: {}", order.getCustomer().getId());
-        if (order.getOrderDate() == null) {
-            order.setOrderDate(java.time.LocalDateTime.now());
-        }
-
-        int result = orderRepository.save(order);
-        if (result > 0) {
-            logger.info("Order saved successfully");
-            return order;
-        } else {
-            logger.error("Failed to save order");
-            throw new RuntimeException("Failed to save order");
-        }
+        // تاریخ به صورت خودکار با @PrePersist در Entity ست می‌شود، نیازی به این بخش نیست
+        // if (order.getOrderDate() == null) {
+        //     order.setOrderDate(LocalDateTime.now());
+        // }
+        return orderRepository.save(order);
     }
+
     @Override
-    public Order updateOrder(Long id, Order order) {
+    public Order updateOrder(Long id, Order orderDetails) {
         logger.info("Updating order with id: {}", id);
-        Order existing = getOrderById(id); // از متد تعریف شده استفاده می‌کنیم
+        Order existingOrder = getOrderById(id); // پیدا کردن سفارش موجود
 
-        // آپدیت فیلدهای قابل تغییر
-        existing.setCustomer(order.getCustomer());
-        existing.setSymbol(order.getSymbol());
-        existing.setOrderType(order.getOrderType());
-        existing.setQuantity(order.getQuantity());
-        existing.setTotalPrice(order.getTotalPrice());
-        existing.setOrderDate(order.getOrderDate() != null ? order.getOrderDate() : existing.getOrderDate());
-        existing.setStatus(order.getStatus());
+        // آپدیت فیلدهای مورد نظر
+        existingOrder.setCustomer(orderDetails.getCustomer());
+        existingOrder.setSymbol(orderDetails.getSymbol());
+        existingOrder.setOrderType(orderDetails.getOrderType());
+        existingOrder.setQuantity(orderDetails.getQuantity());
+        existingOrder.setTotalPrice(orderDetails.getTotalPrice());
+        existingOrder.setStatus(orderDetails.getStatus());
 
-        int result = orderRepository.update(existing);
-        if (result > 0) {
-            logger.info("Order updated successfully");
-            return existing;
-        } else {
-            logger.error("Failed to update order with id: {}", id);
-            throw new RuntimeException("Failed to update order with id: " + id);
-        }
+        // ذخیره تغییرات
+        return orderRepository.save(existingOrder);
     }
 
     @Override
     public void deleteOrder(Long id) {
         logger.info("Deleting order with id: {}", id);
-        int result = orderRepository.deleteById(id);
-        if (result == 0) {
-            logger.error("Failed to delete order with id: {}", id);
-            throw new RuntimeException("Failed to delete order with id: " + id);
+        // ابتدا بررسی می‌کنیم که سفارشی با این شناسه وجود دارد یا نه
+        if (!orderRepository.existsById(id)) {
+            logger.error("Failed to delete order with id: {}. Not found.", id);
+            throw new RuntimeException("سفارشی برای حذف با شناسه " + id + " پیدا نشد");
         }
+        orderRepository.deleteById(id);
         logger.info("Order deleted successfully");
     }
 }
-

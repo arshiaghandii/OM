@@ -19,14 +19,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        // **اصلاح کلیدی:** ورودی usernameOrEmail به عنوان هر دو پارامتر ارسال می‌شود
         Customer customer = customerRepository
-                .findByUsernameOrEmail(usernameOrEmail)
+                .findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("کاربری با این نام کاربری یا ایمیل پیدا نشد"));
 
         return User.builder()
-                .username(customer.getUsername()) // یا customer.getEmail() اگر میخوای بر اساس ایمیل هم باشه
-                .password(customer.getPassword()) // رمز هش شده از دیتابیس
-                .roles("USER") // نقش ساده
+                .username(customer.getUsername())
+                .password(customer.getPassword())
+                .roles("USER")
                 .build();
     }
 }
