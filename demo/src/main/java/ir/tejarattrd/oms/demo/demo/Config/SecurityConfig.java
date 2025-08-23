@@ -58,16 +58,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(2) // اولویت دوم: این فیلتر برای صفحات وب اجرا می‌شود
+    @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png").permitAll() // مسیرهای عمومی صفحات وب
-                        .anyRequest().authenticated() // بقیه صفحات نیاز به ورود دارند
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // صفحه لاگین سفارشی (اگر بسازید)
-                        .defaultSuccessUrl("/", true) // بعد از ورود موفق به صفحه اصلی برود
+                        .loginPage("/login")
+                        // **این خط کد، کل مشکل را حل می‌کند**
+                        .usernameParameter("usernameOrEmail")
+                        .defaultSuccessUrl("/", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

@@ -1,161 +1,57 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl"  xmlns:th="http://www.thymeleaf.org">
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صفحه اصلی</title>
     <style>
-        body {
-            font-family: 'Tahoma', sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #f0f4f8, #d9e4ec);
-            color: #333;
-        }
-
-        header {
-            background: linear-gradient(135deg, #004080, #0066b3);
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .logo {
-            height: 50px;
-            width: 120px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .logo img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; /* تصویر رو بدون تغییر تناسب داخل باکس نگه می‌داره */
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        nav button {
-            background-color: #ffcc00;
-            border: none;
-            padding: 10px 18px;
-            margin-left: 10px;
-            cursor: pointer;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        nav button:hover {
-            background-color: #ffaa00;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        main {
-            padding: 20px;
-            max-width: 1100px;
-            margin: auto;
-        }
-
-        h1 {
-            text-align: center;
-            margin-top: 30px;
-            color: #004080;
-        }
-
-        .history {
-            background-color: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin-top: 30px;
-            line-height: 1.8;
-            font-size: 15px;
-        }
-
-        .history h2 {
-            color: #004080;
-            margin-bottom: 15px;
-        }
-
-        footer {
-           background: linear-gradient(135deg, #004080, #0066b3);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            margin-top: 30px;
-            font-size: 14px;
-        }
-
-        /* ریسپانسیو */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            nav {
-                margin-top: 10px;
-            }
-            nav button {
-                margin: 5px 0;
-                width: 100%;
-            }
-            .logo {
-                width: 100%;
-            }
-        }
+        body { font-family: 'Tahoma', sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #f0f4f8, #d9e4ec); color: #333; }
+        header { background: linear-gradient(135deg, #004080, #0066b3); color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .logo { height: 50px; width: 120px; background-color: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
+        .logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .logo:hover { transform: scale(1.05); }
+        nav { display: flex; align-items: center; } /* برای تراز بهتر */
+        nav button { background-color: #ffcc00; border: none; padding: 10px 18px; margin-left: 10px; cursor: pointer; border-radius: 25px; font-size: 14px; font-weight: bold; transition: all 0.3s ease; }
+        nav button:hover { background-color: #ffaa00; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        nav form { display: inline; margin: 0; padding: 0; } /* فرم خروج */
+        main { padding: 20px; max-width: 1100px; margin: auto; }
+        h1 { text-align: center; margin-top: 30px; color: #004080; }
+        .history { background-color: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 30px; line-height: 1.8; font-size: 15px; }
+        .history h2 { color: #004080; margin-bottom: 15px; }
+        footer { background: linear-gradient(135deg, #004080, #0066b3); color: white; text-align: center; padding: 12px; margin-top: 30px; font-size: 14px; }
     </style>
 </head>
 <body>
 
-<header><div class="logo">
-    <a href="/">
-        <img src="/TBRK_Logo.png" alt="لوگوی  تجارت">
-    </a>
-</div>
+<header>
+    <div class="logo">
+        <a href="/"><img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت"></a>
+    </div>
 
     <nav>
-        <div th:if="${session.currentUser == null}">
-            <button id="loginBtn" onclick="location.href='/login'">ورود</button>
-            <button id="registerBtn" onclick="location.href='/register'">ثبت‌نام</button>
+        <div sec:authorize="!isAuthenticated()">
+            <button onclick="location.href='/login'">ورود</button>
+            <button onclick="location.href='/register'">ثبت‌نام</button>
         </div>
 
-        <div th:if="${session.currentUser != null}">
-            <button id="orderBtn" onclick="location.href='/order'">صفحه معاملات</button>
-            <button onclick="location.href='/logout'">خروج</button>
+        <div sec:authorize="isAuthenticated()">
+            <span style="color: white; margin-left: 15px; font-weight: bold;">کاربر: <span sec:authentication="name"></span></span>
+            <button onclick="location.href='/order'">صفحه معاملات</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">خروج</button>
+            </form>
         </div>
-
     </nav>
-
 </header>
-
 <main>
     <h1>به سامانه معاملات کارگزاری بانک تجارت خوش آمدید</h1>
 
     <div class="history">
-        <h2>تاریخچه شرکت</h2>
+        <h2>پیشرو در خدمات نوین بازار سرمایه</h2>
         <p>
-            کارگزاری بانک تجارت با سابقه‌ای درخشان در حوزه خدمات مالی و سرمایه‌گذاری،
-            به عنوان یکی از بزرگ‌ترین و معتبرترین کارگزاری‌های کشور فعالیت می‌کند.
-            این مجموعه با بهره‌گیری از دانش و تجربه کارشناسان مجرب،
-            ارائه خدمات نوین بانکی و کارگزاری را در اولویت قرار داده است.
+            <b>کارگزاری بانک تجارت</b>، به عنوان یکی از بازوهای اصلی بانک تجارت در بازار سرمایه کشور، با تکیه بر دهه‌ها تجربه و اعتبار این بانک بزرگ، مفتخر است که خدمات جامع و نوین معاملاتی را به سرمایه‌گذاران حقیقی و حقوقی ارائه دهد. هدف ما، ایجاد بستری امن، سریع و هوشمند برای دسترسی شما به فرصت‌های سرمایه‌گذاری در بورس اوراق بهادار، فرابورس، بورس کالا و انرژی است.
         </p>
         <p>
-            بانک تجارت، با بیش از چند دهه سابقه درخشان در ارائه خدمات مالی و بانکی،
-            همواره پیشرو در نوآوری و ارائه راهکارهای مالی متنوع برای مشتریان خود بوده است.
+            ما با بهره‌گیری از تیمی متخصص و متعهد و همچنین ارائه پلتفرم‌های معاملاتی پیشرفته، می‌کوشیم تا تجربه معاملاتی سودمند و لذت‌بخشی را برای شما به ارمغان آوریم. در کارگزاری بانک تجارت، آینده مالی شما اولویت ماست.
         </p>
     </div>
 </main>
@@ -163,17 +59,6 @@
 <footer>
     © 2025 تمامی حقوق محفوظ است - کارگزاری بانک تجارت
 </footer>
-
-<script>
-    // شبیه‌سازی وضعیت ورود کاربر
-    let isLoggedIn = false; // بعداً با بک‌اند کنترل می‌شود
-
-    if (isLoggedIn) {
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('registerBtn').style.display = 'none';
-        document.getElementById('orderBtn').style.display = 'inline-block';
-    }
-</script>
 
 </body>
 </html>
