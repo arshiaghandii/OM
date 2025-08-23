@@ -2,6 +2,4 @@ CREATE TABLE customers (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    age INTEGER NOT NULL CHECK (age BETWEEN 15 AND 150),
-    is_active BOOLEAN NOT NULL DEFAULT TRUE
-);
+
