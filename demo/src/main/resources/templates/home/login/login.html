@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login</title>
+    <style>
+        /* CSS قبلی شما */
+        body {
+            font-family: 'Tahoma', sans-serif;
+          background: linear-gradient(135deg, #004080, #0066b3);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+
+        .login-container .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .login-container .logo img {
+            width: 100px;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-left: 10px;
+        }
+
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .links a {
+            text-decoration: none;
+            font-size: 0.9em;
+            color: #007bff;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+
+    <div class="logo">
+        <a href="/">
+            <img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت">
+
+        </a>
+    </div>
+
+    <h2>ورود</h2>
+
+    <div th:if="${error != null}" class="error-message" th:text="${error}"></div>
+
+    <form th:action="@{/login}" method="post" th:object="${loginForm}">
+        <div>
+            <label>نام کاربری یا ایمیل</label>
+            <input type="text" th:field="*{usernameOrEmail}" placeholder="نام کاربری یا ایمیل خود را وارد کنید" required />
+        </div>
+
+        <div>
+            <label>رمز عبور</label>
+            <input type="password" th:field="*{password}" placeholder="رمز عبور را وارد کنید" required />
+        </div>
+
+        <div class="checkbox-group">
+            <input type="checkbox" th:field="*{rememberMe}" />
+            <label>مرا به خاطر بسپار</label>
+        </div>
+
+        <div class="links">
+            <a href="/forgot-password">فراموشی رمز عبور؟</a>
+            <a href="/register">حساب کاربری ندارم</a>
+        </div>
+
+        <button type="submit">ورود</button>
+    </form>
+</div>
+</body>
+</html>
