@@ -2,28 +2,168 @@
 <html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>صفحه اصلی</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه اصلی - کارگزاری بانک تجارت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Tahoma', sans-serif; margin: 0; padding: 0; background: linear-gradient(135deg, #f0f4f8, #d9e4ec); color: #333; }
-        header { background: linear-gradient(135deg, #004080, #0066b3); color: white; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        .logo { height: 50px; width: 120px; background-color: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s; }
-        .logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .logo:hover { transform: scale(1.05); }
-        nav { display: flex; align-items: center; } /* برای تراز بهتر */
-        nav button { background-color: #ffcc00; border: none; padding: 10px 18px; margin-left: 10px; cursor: pointer; border-radius: 25px; font-size: 14px; font-weight: bold; transition: all 0.3s ease; }
-        nav button:hover { background-color: #ffaa00; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        nav form { display: inline; margin: 0; padding: 0; } /* فرم خروج */
-        main { padding: 20px; max-width: 1100px; margin: auto; }
-        h1 { text-align: center; margin-top: 30px; color: #004080; }
-        .history { background-color: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-top: 30px; line-height: 1.8; font-size: 15px; }
-        .history h2 { color: #004080; margin-bottom: 15px; }
-        footer { background: linear-gradient(135deg, #004080, #0066b3); color: white; text-align: center; padding: 12px; margin-top: 30px; font-size: 14px; }
+        :root {
+            /* --- Bank Tejarat Blue Integration --- */
+            --primary-blue: #005A9C; /* Official Bank Tejarat Blue */
+            --secondary-blue: #007BFF; /* A complementary lighter blue */
+
+            --accent-gradient-start: #17a2b8;
+            --accent-gradient-end: #20c997;
+            --logout-color: #6c757d;
+            --logout-color-hover: #e53935;
+            --background-light: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #212529;
+            --text-light: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --font-family: 'Vazirmatn', sans-serif;
+        }
+
+        /* General Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* --- Clean Header --- */
+        header {
+            background-color: var(--card-bg);
+            color: var(--text-dark);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: sticky; top: 0; z-index: 1000;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .logo-container {
+            transition: transform 0.3s ease;
+        }
+        .logo-container:hover { transform: scale(1.08); }
+        .logo-container img { height: 45px; display: block; }
+
+        nav { display: flex; align-items: center; gap: 1rem; }
+        nav .user-info { font-weight: 600; color: var(--primary-blue); animation: fadeIn 1s 0.2s ease-out backwards; }
+
+        /* --- Synced Button Styles --- */
+        nav button {
+            background-image: linear-gradient(45deg, var(--accent-gradient-start), var(--accent-gradient-end));
+            background-size: 200% auto;
+            color: var(--text-light);
+            border: none;
+            padding: 10px 24px;
+            cursor: pointer;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
+            box-shadow: 0 4px 15px rgba(32, 201, 151, 0.2);
+            animation: fadeIn 1s 0.4s ease-out backwards;
+        }
+
+        nav button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(32, 201, 151, 0.3);
+        }
+
+        /* Ghost Style for Logout Button */
+        nav button.logout {
+            background-image: none;
+            background-color: transparent;
+            border: 2px solid #ced4da;
+            color: var(--logout-color);
+            box-shadow: none;
+        }
+
+        nav button.logout:hover {
+            background-color: var(--logout-color-hover);
+            border-color: var(--logout-color-hover);
+            color: var(--text-light);
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
+        }
+
+        nav form { display: inline; margin: 0; }
+
+        main { padding: 3rem 1.5rem; max-width: 1100px; margin: auto; }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--primary-blue);
+            font-size: 2.5rem; font-weight: 700;
+            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* --- Synced Content Card Style --- */
+        .history {
+            background-color: var(--card-bg);
+            padding: 2.5rem 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px var(--shadow-color);
+            line-height: 2; font-size: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: slideUp 0.9s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+        }
+        .history:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px var(--shadow-color);
+        }
+
+        .history h2 {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-gradient-start);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .history b { color: var(--secondary-blue); font-weight: 600; }
+
+        /* --- Clean Footer --- */
+        footer {
+            background-color: #E9ECEF;
+            color: #6C757D;
+            text-align: center;
+            padding: 1.2rem;
+            margin-top: 3rem;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; padding: 1rem; gap: 1rem; }
+            nav { flex-wrap: wrap; justify-content: center; }
+            h1 { font-size: 2rem; }
+            .history { padding: 2rem 1.5rem; }
+            .history h2 { font-size: 1.5rem; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">
+    <div class="logo-container">
         <a href="/"><img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت"></a>
     </div>
 
@@ -34,10 +174,10 @@
         </div>
 
         <div sec:authorize="isAuthenticated()">
-            <span style="color: white; margin-left: 15px; font-weight: bold;">کاربر: <span sec:authentication="name"></span></span>
+            <span class="user-info">کاربر: <span sec:authentication="name"></span></span>
             <button onclick="location.href='/order'">صفحه معاملات</button>
             <form th:action="@{/logout}" method="post">
-                <button type="submit">خروج</button>
+                <button type="submit" class="logout">خروج</button>
             </form>
         </div>
     </nav>

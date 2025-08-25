@@ -3,27 +3,170 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ثبت‌نام</title>
+    <title>ثبت‌نام - کارگزاری بانک تجارت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-blue: #004a99;
+            --secondary-blue: #0066cc;
+            --accent-gradient-start: #17a2b8;
+            --accent-gradient-end: #20c997;
+            --error-red: #e53935;
+            --error-bg: #ffcdd2;
+            --light-bg: #f8f9fa;
+            --dark-text: #212529;
+            --light-text: #ffffff;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 74, 153, 0.15);
+            --font-family: 'Vazirmatn', sans-serif;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         * { box-sizing: border-box; }
-        body { margin: 0; font-family: "Tahoma", sans-serif; background: linear-gradient(135deg, #004080, #0066b3); color: #fff; height: 100vh; display: flex; justify-content: center; align-items: center; direction: rtl; }
-        .register-container { background: #fff; padding: 2.5rem 3rem; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); text-align: center; color: #333; }
+
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background: linear-gradient(135deg, #eaf2f8, #f8f9fa);
+            color: var(--dark-text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            direction: rtl;
+            padding: 20px 0;
+        }
+
+        .register-container {
+            background: var(--card-bg);
+            padding: 2.5rem 3rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            color: var(--dark-text);
+            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
         .logo { margin-bottom: 2rem; }
-        .logo img { max-width: 220px; }
-        .register-container h2 { margin-bottom: 1.5rem; color: #004080; font-weight: 700; font-size: 1.8rem; }
-        form { display: flex; flex-direction: column; gap: 1rem; text-align: right; }
-        label { font-weight: 600; margin-bottom: 0.25rem; display: block; font-size: 0.95rem; color: #004080; }
-        input { padding: 0.8rem 1rem; font-size: 1rem; border: 1.8px solid #004080; border-radius: 6px; transition: border-color 0.3s ease; direction: rtl; }
-        input:focus { border-color: #0066b3; box-shadow: 0 0 5px #0066b3aa; }
-        button { margin-top: 1.2rem; background: #004080; color: white; border: none; padding: 0.9rem 1rem; font-size: 1.1rem; font-weight: 700; border-radius: 6px; cursor: pointer; transition: background-color 0.3s ease; }
-        button:hover { background: #0066b3; }
-        .links { margin-top: 0.5rem; font-size: 0.9rem; display: flex; justify-content: space-between; }
-        .links a { color: #0f4c81; text-decoration: none; transition: color 0.3s ease; }
-        .links a:hover { color: #1e70bf; text-decoration: underline; }
-        /* استایل‌های اضافه شده برای نمایش خطاها */
-        .error-text { color: #D8000C; font-size: 0.8em; margin-top: 4px; }
-        .global-error { background-color: #FFBABA; color: #D8000C; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; }
-        input.error-field { border-color: #D8000C !important; }
+        .logo img { max-width: 200px; }
+
+        .register-container h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            text-align: right;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: block;
+            font-size: 0.9rem;
+            color: var(--primary-blue);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            direction: rtl;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent-gradient-start);
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.2);
+        }
+
+        button[type="submit"] {
+            margin-top: 1.2rem;
+            background-image: linear-gradient(45deg, var(--accent-gradient-start), var(--accent-gradient-end));
+            background-size: 200% auto;
+            color: var(--light-text);
+            border: none;
+            padding: 0.9rem 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-family);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        button[type="submit"]:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(32, 201, 151, 0.3);
+        }
+
+        .links {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .links a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: var(--primary-blue);
+            text-decoration: underline;
+        }
+
+        .error-text {
+            color: var(--error-red);
+            font-size: 0.85em;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .global-error {
+            background-color: var(--error-bg);
+            color: var(--error-red);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        input.error-field {
+            border-color: var(--error-red) !important;
+        }
+        input.error-field:focus {
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.25) !important;
+        }
+
+        @media (max-width: 500px) {
+            .register-container {
+                padding: 2rem 1.5rem;
+            }
+            .register-container h2 {
+                font-size: 1.6rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -33,7 +176,7 @@
         <a href="/"><img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت"></a>
     </div>
 
-    <h2 id="registerTitle">ثبت‌نام</h2>
+    <h2 id="registerTitle">ایجاد حساب کاربری</h2>
 
     <div th:if="${registrationError}" th:text="${registrationError}" class="global-error"></div>
 
@@ -42,78 +185,43 @@
 
         <div>
             <label for="first_name">نام</label>
-            <input type="text" th:field="*{first_name}" id="first_name" th:classappend="${#fields.hasErrors('first_name')} ? 'error-field' : ''" />
+            <input type="text" th:field="*{first_name}" id="first_name" required th:classappend="${#fields.hasErrors('first_name')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('first_name')}" th:errors="*{first_name}" class="error-text"></p>
         </div>
         <div>
             <label for="last_name">نام خانوادگی</label>
-            <input type="text" th:field="*{last_name}" id="last_name" th:classappend="${#fields.hasErrors('last_name')} ? 'error-field' : ''" />
+            <input type="text" th:field="*{last_name}" id="last_name" required th:classappend="${#fields.hasErrors('last_name')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('last_name')}" th:errors="*{last_name}" class="error-text"></p>
         </div>
         <div>
             <label for="username">نام کاربری</label>
-            <input type="text" th:field="*{username}" id="username" th:classappend="${#fields.hasErrors('username')} ? 'error-field' : ''" />
+            <input type="text" th:field="*{username}" id="username" required th:classappend="${#fields.hasErrors('username')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error-text"></p>
         </div>
         <div>
             <label for="email">ایمیل</label>
-            <input type="email" th:field="*{email}" id="email" th:classappend="${#fields.hasErrors('email')} ? 'error-field' : ''" />
+            <input type="email" th:field="*{email}" id="email" required th:classappend="${#fields.hasErrors('email')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-text"></p>
         </div>
         <div>
             <label for="phone">شماره تماس</label>
-            <input type="tel" th:field="*{phone}" id="phone" th:classappend="${#fields.hasErrors('phone')} ? 'error-field' : ''" />
+            <input type="tel" th:field="*{phone}" id="phone" required th:classappend="${#fields.hasErrors('phone')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error-text"></p>
         </div>
         <div>
             <label for="password">رمز عبور</label>
-            <input type="password" th:field="*{password}" id="password" th:classappend="${#fields.hasErrors('password')} ? 'error-field' : ''" />
+            <input type="password" th:field="*{password}" id="password" required th:classappend="${#fields.hasErrors('password')} ? 'error-field' : ''" />
             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-text"></p>
-        </div>
-
-        <div>
-            <label for="confirmPassword">تکرار رمز عبور</label>
-            <input type="password" th:field="*{confirmPassword}" id="confirmPassword" required
-                   th:classappend="${#fields.hasErrors('global')} ? 'error-field' : ''" />
         </div>
 
         <button type="submit">ثبت‌نام</button>
 
         <div class="links">
-            <a href="/login">صفحه ورود</a>
+            <a href="/login">حساب کاربری دارید؟ ورود</a>
             <a href="/">بازگشت به صفحه اصلی</a>
         </div>
     </form>
 </div>
-<script>
-    const form = document.getElementById('registerForm');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const errorMessageDiv = document.getElementById('js-error-message');
 
-    form.addEventListener('submit', function(event) {
-        // مخفی کردن پیام خطا در هر بار تلاش
-        errorMessageDiv.style.display = 'none';
-        errorMessageDiv.textContent = '';
-
-        // چک کردن برابری رمزها
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            // جلوگیری از ارسال فرم
-            event.preventDefault();
-
-            // نمایش پیام خطا
-            errorMessageDiv.textContent = 'رمز عبور و تکرار آن یکسان نیستند.';
-            errorMessageDiv.style.display = 'block';
-
-            // قرمز کردن کادرها
-            passwordInput.classList.add('error-field');
-            confirmPasswordInput.classList.add('error-field');
-        } else {
-            // اگر رمزها درست بود، کلاس خطا را حذف کن
-            passwordInput.classList.remove('error-field');
-            confirmPasswordInput.classList.remove('error-field');
-        }
-    });
-</script>
 </body>
 </html>
