@@ -62,12 +62,12 @@ public class SecurityConfig {
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png").permitAll()
+                        // **اینجا مسیر لوگو اضافه شده است**
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png", "/LOGO.svg").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        // **این خط کد، کل مشکل را حل می‌کند**
                         .usernameParameter("usernameOrEmail")
                         .defaultSuccessUrl("/", true)
                         .permitAll()
