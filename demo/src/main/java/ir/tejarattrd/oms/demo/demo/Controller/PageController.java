@@ -58,6 +58,11 @@ public class PageController {
             return "home/register/register";
         }
     }
+    @GetMapping("/order")
+    public String Order(){
+        return "home/orderP/Order";
+    }
+
 
     // متد logout کاملاً حذف می‌شود. Spring Security آن را مدیریت می‌کند.
 }

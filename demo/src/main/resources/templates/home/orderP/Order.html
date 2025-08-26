@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه معاملات - کارگزاری بانک تجارت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #005A9C;
+            --secondary-blue: #007BFF;
+            --accent-gradient-start: #17a2b8;
+            --accent-gradient-end: #20c997;
+            --buy-green: #28a745;
+            --sell-red: #dc3545;
+            --background-light: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #212529;
+            --text-light: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --border-color: #dee2e6;
+            --font-family: 'Vazirmatn', sans-serif;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            position: sticky; top: 0; z-index: 1000;
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        .logo-container img { height: 45px; }
+        nav { display: flex; align-items: center; gap: 1.5rem; }
+        nav .user-info { font-weight: 600; color: var(--primary-blue); }
+        nav button {
+            background: transparent;
+            color: var(--text-dark);
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: var(--font-family);
+            transition: all 0.3s ease;
+        }
+        nav button.logout {
+            border: 2px solid #ced4da;
+            color: #6c757d;
+        }
+        nav button.logout:hover {
+            background-color: var(--sell-red);
+            border-color: var(--sell-red);
+            color: var(--text-light);
+        }
+        nav form { display: inline; }
+
+        /* --- Main Content (Responsive Grid) --- */
+        main {
+            padding: 2.5rem;
+            max-width: 1400px;
+            margin: auto;
+            display: grid;
+            /* **اصلاح کلیدی:** استفاده از ستون‌های انعطاف‌پذیر */
+            grid-template-columns: 1fr;
+            gap: 2.5rem;
+            align-items: flex-start;
+        }
+
+        /* در سایزهای بزرگتر، دو ستونی می‌شود */
+        @media (min-width: 992px) {
+            main {
+                /* ستون اول یک سوم و ستون دوم دو سوم فضا را اشغال می‌کند */
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .tables-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+
+        /* --- Cards --- */
+        .card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .card h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+
+        /* --- Order Form --- */
+        .form-group { margin-bottom: 1.2rem; }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .form-group input[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+        }
+
+        .order-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .order-type-selector button {
+            padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .order-type-selector button.buy { background-color: #e9f5ec; color: var(--buy-green); }
+        .order-type-selector button.sell { background-color: #fbebed; color: var(--sell-red); }
+        .order-type-selector button.active { border-color: currentColor; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn.buy { background-color: var(--buy-green); }
+        .submit-btn.sell { background-color: var(--sell-red); }
+        .submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        /* --- Tables --- */
+        .table-container { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+        th, td {
+            padding: 1rem 0.8rem;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        th {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background-color: #f1f3f5; }
+
+        .status {
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-completed { background-color: #e9f5ec; color: var(--buy-green); }
+        .status-pending { background-color: #fff4e6; color: #ff9f43; }
+        .status-cancelled { background-color: #fbebed; color: var(--sell-red); }
+
+        .order-type-buy { color: var(--buy-green); font-weight: 600; }
+        .order-type-sell { color: var(--sell-red); font-weight: 600; }
+
+        .select-symbol-btn {
+            background-color: var(--secondary-blue);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: var(--font-family);
+            transition: background-color 0.2s;
+        }
+        .select-symbol-btn:hover { background-color: var(--primary-blue); }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 576px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            main { padding: 1.5rem; }
+            .card { padding: 1.5rem; }
+            h2 { font-size: 1.4rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <a href="/"><img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت"></a>
+    </div>
+    <nav>
+        <span class="user-info">کاربر: <span sec:authentication="name"></span></span>
+        <a href="/"><button>صفحه اصلی</button></a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="logout">خروج</button>
+        </form>
+    </nav>
+</header>
+
+<main>
+    <div class="card order-form-card" id="orderFormCard">
+        <h2>ثبت سفارش جدید</h2>
+        <form>
+            <input type="hidden" id="orderType" name="orderType" value="buy">
+            <div class="order-type-selector">
+                <button type="button" class="buy active" onclick="setOrderType('buy')">خرید</button>
+                <button type="button" class="sell" onclick="setOrderType('sell')">فروش</button>
+            </div>
+            <div class="form-group">
+                <label for="symbol">نماد</label>
+                <input type="text" id="symbol" name="symbol" placeholder="نماد را انتخاب کنید">
+            </div>
+            <div class="form-group">
+                <label for="quantity">تعداد</label>
+                <input type="number" id="quantity" name="quantity" placeholder="تعداد سهم" oninput="calculateTotal()">
+            </div>
+            <div class="form-group">
+                <label for="unit_price">قیمت واحد (ریال)</label>
+                <input type="number" id="unit_price" name="unit_price" placeholder="قیمت واحد" oninput="calculateTotal()">
+            </div>
+            <div class="form-group">
+                <label for="total_price">قیمت کل (ریال)</label>
+                <input type="text" id="total_price" name="total_price" readonly>
+            </div>
+            <button type="submit" class="submit-btn buy" id="submitBtn">ثبت خرید</button>
+        </form>
+    </div>
+
+    <div class="tables-container">
+        <div class="card" id="symbolsListCard">
+            <h2>لیست نمادها</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>نماد</th>
+                        <th>نام شرکت</th>
+                        <th>قیمت</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>خودرو</td>
+                        <td>ایران خودرو</td>
+                        <td>۵,۲۴۰</td>
+                        <td><button class="select-symbol-btn" onclick="selectSymbol('خودرو', '5240')">انتخاب</button></td>
+                    </tr>
+                    <tr>
+                        <td>شپنا</td>
+                        <td>پالایش نفت اصفهان</td>
+                        <td>۸,۲۴۰</td>
+                        <td><button class="select-symbol-btn" onclick="selectSymbol('شپنا', '8240')">انتخاب</button></td>
+                    </tr>
+                    <tr>
+                        <td>فملی</td>
+                        <td>ملی صنایع مس ایران</td>
+                        <td>۶,۰۰۰</td>
+                        <td><button class="select-symbol-btn" onclick="selectSymbol('فملی', '6000')">انتخاب</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" id="ordersTableCard">
+            <h2>لیست سفارشات</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>نماد</th>
+                        <th>نوع</th>
+                        <th>تعداد</th>
+                        <th>قیمت واحد</th>
+                        <th>قیمت کل (ریال)</th>
+                        <th>تاریخ</th>
+                        <th>وضعیت</th>
+                    </tr>
+                    </thead>
+                    <tbody id="orders-tbody">
+                    <tr>
+                        <td>خودرو</td>
+                        <td class="order-type-buy">خرید</td>
+                        <td>۱,۰۰۰</td>
+                        <td>۵,۲۴۰</td>
+                        <td>۵,۲۴۰,۰۰۰</td>
+                        <td>۱۴۰۳/۰۵/۲۴</td>
+                        <td><span class="status status-completed">انجام شده</span></td>
+                    </tr>
+                    <tr>
+                        <td>شپنا</td>
+                        <td class="order-type-sell">فروش</td>
+                        <td>۵۰۰</td>
+                        <td>۸,۲۴۰</td>
+                        <td>۴,۱۲۰,۰۰۰</td>
+                        <td>۱۴۰۳/۰۵/۲۳</td>
+                        <td><span class="status status-pending">در انتظار</span></td>
+                    </tr>
+                    <tr>
+                        <td>فملی</td>
+                        <td class="order-type-buy">خرید</td>
+                        <td>۲,۵۰۰</td>
+                        <td>۶,۰۰۰</td>
+                        <td>۱۵,۰۰۰,۰۰۰</td>
+                        <td>۱۴۰۳/۰۵/۲۱</td>
+                        <td><span class="status status-cancelled">لغو شده</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    const buyButton = document.querySelector('.order-type-selector .buy');
+    const sellButton = document.querySelector('.order-type-selector .sell');
+    const orderTypeInput = document.getElementById('orderType');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const quantityInput = document.getElementById('quantity');
+    const unitPriceInput = document.getElementById('unit_price');
+    const totalPriceInput = document.getElementById('total_price');
+    const symbolInput = document.getElementById('symbol');
+    const orderFormCard = document.getElementById('orderFormCard');
+
+    function setOrderType(type) {
+        orderTypeInput.value = type;
+        if (type === 'buy') {
+            buyButton.classList.add('active');
+            sellButton.classList.remove('active');
+            submitBtn.className = 'submit-btn buy';
+            submitBtn.innerText = 'ثبت خرید';
+        } else {
+            sellButton.classList.add('active');
+            buyButton.classList.remove('active');
+            submitBtn.className = 'submit-btn sell';
+            submitBtn.innerText = 'ثبت فروش';
+        }
+    }
+
+    function calculateTotal() {
+        const quantity = parseFloat(quantityInput.value) || 0;
+        const unitPrice = parseFloat(unitPriceInput.value) || 0;
+        const total = quantity * unitPrice;
+
+        totalPriceInput.value = total > 0 ? total.toLocaleString('fa-IR') : '';
+    }
+
+    function selectSymbol(symbolName, unitPrice) {
+        symbolInput.value = symbolName;
+        unitPriceInput.value = unitPrice;
+
+        calculateTotal();
+
+        if (window.innerWidth < 992) {
+             orderFormCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        symbolInput.focus();
+    }
+</script>
+
+</body>
+</html>
