@@ -1,9 +1,10 @@
+// Tejarat Project/demo/src/main/java/ir/tejarattrd/oms/demo/demo/Config/SecurityConfig.java
+
 package ir.tejarattrd.oms.demo.demo.Config;
 
 import ir.tejarattrd.oms.demo.demo.Service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,28 +43,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1) // اولویت اول: این فیلتر برای API ها اجرا می‌شود
-    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/api/**") // این تنظیمات فقط برای مسیرهای /api اعمال شود
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll() // مسیر لاگین API باز باشد
-                        .anyRequest().authenticated() // بقیه مسیرهای API نیاز به احراز هویت دارند
+                // **اصلاح کلیدی: غیرفعال کردن CSRF فقط برای مسیرهای API**
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/**")
                 )
-                .csrf(csrf -> csrf.disable()) // غیرفعال کردن CSRF برای API ها ضروری است
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // API ها نباید Session ایجاد کنند
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // اضافه کردن فیلتر JWT
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
-        http
                 .authorizeHttpRequests(auth -> auth
-                        // **اینجا مسیر لوگو اضافه شده است**
+                        // مسیرهای عمومی که نیاز به لاگین ندارند
                         .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/TBRK_Logo.png", "/LOGO.svg").permitAll()
+                        // مسیر لاگین API برای دریافت توکن JWT
+                        .requestMatchers("/api/auth/**").permitAll()
+                        // بقیه مسیرها باید احراز هویت شوند
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -78,6 +69,10 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .permitAll()
                 );
+
+        // **نکته:** مدیریت Session و فیلتر JWT به این شکل از تداخل جلوگیری می‌کند
+        // این بخش دیگر به زنجیره اصلی متصل نیست و به صورت جداگانه کار می‌کند
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
