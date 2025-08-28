@@ -11,4 +11,5 @@ public interface SymbolService {
     Symbol saveSymbol(Symbol symbol);
     Symbol updateSymbol(Long id, Symbol symbol);
     void deleteSymbol(Long id);
-}
+    Symbol updateSymbolVolume(Long id, Long newVolume);}
+

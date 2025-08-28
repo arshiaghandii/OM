@@ -25,11 +25,24 @@
         @Column(name = "unit_price", precision = 18)
         private Double unitPrice;
 
+        @Column(name = "trading_volume")
+        private Long tradingVolume;
+
         @Column(name = "last_price_update")
         private LocalDateTime lastPriceUpdate;
 
-            @OneToMany(mappedBy = "symbol", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        @OneToMany(mappedBy = "symbol", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         private Set<Order> orders;
+
+
+        /*------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+        public Long getTradingVolume() {return tradingVolume;}
+
+        public void setTradingVolume(Long tradingVolume) {this.tradingVolume = tradingVolume;}
+
 
         // Getters and Setters
         public Long getSymbolId() { return symbolId; }

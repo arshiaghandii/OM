@@ -59,6 +59,24 @@ public class SymbolServiceImpl implements SymbolService {
         return symbolRepository.save(existingSymbol);
     }
 
+    /**
+     * این متد فقط قیمت یک نماد را بر اساس شناسه آن به‌روزرسانی می‌کند.
+     * این متد اختصاصی برای جلوگیری از خطا و افزایش خوانایی کد ایجاد شده است.
+     */
+    @Override
+    public Symbol updateSymbolVolume(Long id, Long newVolume) {
+        // ابتدا نماد موجود را از دیتابیس پیدا می‌کنیم
+        Symbol existingSymbol = getSymbolById(id);
+
+        // فقط حجم معاملات و تاریخ آپدیت را تغییر می‌دهیم
+        existingSymbol.setTradingVolume(newVolume);
+        existingSymbol.setLastPriceUpdate(LocalDateTime.now());
+
+        // تغییرات را ذخیره کرده و نتیجه را برمی‌گردانیم
+        return symbolRepository.save(existingSymbol);
+    }
+
+
     @Override
     public void deleteSymbol(Long id) {
         logger.info("Deleting symbol with id: {}", id);
