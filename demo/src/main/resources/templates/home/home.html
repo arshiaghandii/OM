@@ -10,148 +10,33 @@
     <link rel="icon" type="image/svg+xml" th:href="@{/LOGO.svg}">
     <style>
         :root {
-            /* --- Bank Tejarat Blue Integration --- */
-            --primary-blue: #005A9C; /* Official Bank Tejarat Blue */
-            --secondary-blue: #007BFF; /* A complementary lighter blue */
-
-            --accent-gradient-start: #17a2b8;
-            --accent-gradient-end: #20c997;
-            --logout-color: #6c757d;
-            --logout-color-hover: #e53935;
-            --background-light: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-dark: #212529;
-            --text-light: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --font-family: 'Vazirmatn', sans-serif;
+            --primary-blue: #005A9C; --secondary-blue: #007BFF; --accent-gradient-start: #17a2b8;
+            --accent-gradient-end: #20c997; --logout-color: #6c757d; --logout-color-hover: #e53935;
+            --background-light: #f8f9fa; --card-bg: #ffffff; --text-dark: #212529; --text-light: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.08); --font-family: 'Vazirmatn', sans-serif;
         }
-
-        /* General Animations */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: var(--font-family);
-            background-color: var(--background-light);
-            color: var(--text-dark);
-            overflow-x: hidden;
-        }
-
-        /* --- Clean Header --- */
-        header {
-            background-color: var(--card-bg);
-            color: var(--text-dark);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px var(--shadow-color);
-            position: sticky; top: 0; z-index: 1000;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .logo-container {
-            transition: transform 0.3s ease;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background-color: var(--background-light); color: var(--text-dark); overflow-x: hidden; }
+        header { background-color: var(--card-bg); color: var(--text-dark); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px var(--shadow-color); position: sticky; top: 0; z-index: 1000; animation: fadeIn 0.8s ease-out; }
+        .logo-container { transition: transform 0.3s ease; }
         .logo-container:hover { transform: scale(1.08); }
         .logo-container img { height: 45px; display: block; }
-
         nav { display: flex; align-items: center; gap: 1rem; }
         nav .user-info { font-weight: 600; color: var(--primary-blue); animation: fadeIn 1s 0.2s ease-out backwards; }
-
-        /* --- Synced Button Styles --- */
-        nav button {
-            background-image: linear-gradient(45deg, var(--accent-gradient-start), var(--accent-gradient-end));
-            background-size: 200% auto;
-            color: var(--text-light);
-            border: none;
-            padding: 10px 24px;
-            cursor: pointer;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 600;
-            font-family: var(--font-family);
-            transition: all 0.4s cubic-bezier(.25, .8, .25, 1);
-            box-shadow: 0 4px 15px rgba(32, 201, 151, 0.2);
-            animation: fadeIn 1s 0.4s ease-out backwards;
-        }
-
-        nav button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(32, 201, 151, 0.3);
-        }
-
-        /* Ghost Style for Logout Button */
-        nav button.logout {
-            background-image: none;
-            background-color: transparent;
-            border: 2px solid #ced4da;
-            color: var(--logout-color);
-            box-shadow: none;
-        }
-
-        nav button.logout:hover {
-            background-color: var(--logout-color-hover);
-            border-color: var(--logout-color-hover);
-            color: var(--text-light);
-            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
-        }
-
+        nav button { background-image: linear-gradient(45deg, var(--accent-gradient-start), var(--accent-gradient-end)); background-size: 200% auto; color: var(--text-light); border: none; padding: 10px 24px; cursor: pointer; border-radius: 50px; font-size: 14px; font-weight: 600; font-family: var(--font-family); transition: all 0.4s cubic-bezier(.25, .8, .25, 1); box-shadow: 0 4px 15px rgba(32, 201, 151, 0.2); animation: fadeIn 1s 0.4s ease-out backwards; }
+        nav button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(32, 201, 151, 0.3); }
+        nav button.logout { background-image: none; background-color: transparent; border: 2px solid #ced4da; color: var(--logout-color); box-shadow: none; }
+        nav button.logout:hover { background-color: var(--logout-color-hover); border-color: var(--logout-color-hover); color: var(--text-light); box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3); }
         nav form { display: inline; margin: 0; }
-
         main { padding: 3rem 1.5rem; max-width: 1100px; margin: auto; }
-
-        h1 {
-            text-align: center;
-            margin-bottom: 3rem;
-            color: var(--primary-blue);
-            font-size: 2.5rem; font-weight: 700;
-            animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        /* --- Synced Content Card Style --- */
-        .history {
-            background-color: var(--card-bg);
-            padding: 2.5rem 3rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px var(--shadow-color);
-            line-height: 2; font-size: 16px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: slideUp 0.9s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
-        }
-        .history:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px var(--shadow-color);
-        }
-
-        .history h2 {
-            color: var(--primary-blue);
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 3px solid var(--accent-gradient-start);
-            padding-bottom: 0.5rem;
-            display: inline-block;
-        }
-
+        h1 { text-align: center; margin-bottom: 3rem; color: var(--primary-blue); font-size: 2.5rem; font-weight: 700; animation: slideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .history { background-color: var(--card-bg); padding: 2.5rem 3rem; border-radius: 20px; box-shadow: 0 15px 40px var(--shadow-color); line-height: 2; font-size: 16px; transition: transform 0.3s ease, box-shadow 0.3s ease; animation: slideUp 0.9s 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards; }
+        .history:hover { transform: translateY(-5px); box-shadow: 0 20px 50px var(--shadow-color); }
+        .history h2 { color: var(--primary-blue); font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 3px solid var(--accent-gradient-start); padding-bottom: 0.5rem; display: inline-block; }
         .history b { color: var(--secondary-blue); font-weight: 700;font-size:1.47em }
-
-        /* --- Clean Footer --- */
-        footer {
-            background-color: #E9ECEF;
-            color: #6C757D;
-            text-align: center;
-            padding: 1.2rem;
-            margin-top: 3rem;
-            font-size: 14px;
-            font-weight: 400;
-        }
-
+        footer { background-color: #E9ECEF; color: #6C757D; text-align: center; padding: 1.2rem; margin-top: 3rem; font-size: 14px; font-weight: 400; }
         @media (max-width: 768px) {
             header { flex-direction: column; padding: 1rem; gap: 1rem; }
             nav { flex-wrap: wrap; justify-content: center; }
@@ -167,25 +52,24 @@
     <div class="logo-container">
         <a href="/"><img th:src="@{/TBRK_Logo.png}" alt="لوگوی تجارت"></a>
     </div>
-
     <nav>
         <div sec:authorize="!isAuthenticated()">
-            <button onclick="location.href='/login'">ورود</button>
-            <button onclick="location.href='/register'">ثبت‌نام</button>
+            <a href="/login"><button>ورود</button></a>
+            <a href="/register"><button>ثبت‌نام</button></a>
         </div>
-
         <div sec:authorize="isAuthenticated()">
             <span class="user-info">کاربر: <span sec:authentication="name"></span></span>
-            <button onclick="location.href='/order'">صفحه معاملات</button>
+            <a href="/order"><button>صفحه معاملات</button></a>
+            <a href="/portfolio"><button>سبد دارایی</button></a>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="logout">خروج</button>
             </form>
         </div>
     </nav>
 </header>
+
 <main>
     <h1>به سامانه معاملات کارگزاری بانک تجارت خوش آمدید</h1>
-
     <div class="history">
         <h2>پیشرو در خدمات نوین بازار سرمایه</h2>
         <p>

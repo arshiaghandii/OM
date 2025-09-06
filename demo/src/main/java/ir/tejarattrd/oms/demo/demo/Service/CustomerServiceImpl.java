@@ -5,7 +5,7 @@ import ir.tejarattrd.oms.demo.demo.Repository.CustomerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.time.LocalDateTime; // برای ست کردن تاریخ ایجاد
+import java.time.LocalDateTime;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -31,44 +31,32 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer saveCustomer(Customer customer) {
-        // **مهم: بررسی تکراری نبودن نام کاربری و ایمیل**
         customerRepository.findByUsernameOrEmail(customer.getUsername(), customer.getEmail())
                 .ifPresent(existingCustomer -> {
                     throw new IllegalStateException("کاربری با این نام کاربری یا ایمیل از قبل وجود دارد.");
                 });
-
-        // هش کردن رمز عبور قبل از ذخیره
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-
-        // ثبت زمان ایجاد کاربر
         customer.setCreatedAt(LocalDateTime.now());
-
         return customerRepository.save(customer);
     }
 
     @Override
     public Customer updateCustomer(Long id, Customer customerDetails) {
         Customer existingCustomer = getCustomerById(id);
-
-        // بررسی اینکه ایمیل یا نام کاربری جدید به شخص دیگری تعلق نداشته باشد
         customerRepository.findByUsernameOrEmail(customerDetails.getUsername(), customerDetails.getEmail())
                 .ifPresent(anotherCustomer -> {
                     if (!anotherCustomer.getId().equals(id)) {
                         throw new IllegalStateException("نام کاربری یا ایمیل جدید به کاربر دیگری تعلق دارد.");
                     }
                 });
-
         existingCustomer.setFirst_name(customerDetails.getFirst_name());
         existingCustomer.setLast_name(customerDetails.getLast_name());
         existingCustomer.setEmail(customerDetails.getEmail());
         existingCustomer.setUsername(customerDetails.getUsername());
         existingCustomer.setPhone(customerDetails.getPhone());
-
-        // فقط در صورتی که رمز عبور جدیدی ارسال شده باشد، آن را آپدیت کن
         if (customerDetails.getPassword() != null && !customerDetails.getPassword().trim().isEmpty()) {
             existingCustomer.setPassword(passwordEncoder.encode(customerDetails.getPassword()));
         }
-
         return customerRepository.save(existingCustomer);
     }
 
@@ -79,4 +67,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
         customerRepository.deleteById(id);
     }
+
+    // متد زیر برای تطابق با اینترفیس کامنت می‌شود
+    // @Override
+    // public Customer getCustomerByUsername(String username) {
+    //     return null;
+    // }
 }

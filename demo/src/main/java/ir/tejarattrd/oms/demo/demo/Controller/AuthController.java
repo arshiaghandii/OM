@@ -19,8 +19,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
         try {
-            // تولید توکن JWT
-            String token = authService.loginAndGetToken(loginForm.getUsernameOrEmail(), loginForm.getPassword());
+            // **تغییر کلیدی در اینجا اتفاق افتاده است**
+            // به جای getUsernameOrEmail() از usernameOrEmail() استفاده می‌کنیم
+            // به جای getPassword() از password() استفاده می‌کنیم
+            String token = authService.loginAndGetToken(loginForm.usernameOrEmail(), loginForm.password());
 
             // پاسخ به کلاینت شامل توکن
             return ResponseEntity.ok().body("{\"token\": \"" + token + "\"}");

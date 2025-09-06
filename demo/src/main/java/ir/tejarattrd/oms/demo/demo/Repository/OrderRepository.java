@@ -12,4 +12,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
      * پیدا کردن تمام سفارشات یک مشتری خاص.
      */
     List<Order> findByCustomerId(Long customerId);
+
+    /**
+     * پیدا کردن تمام سفارشات با یک وضعیت خاص (مثلاً "pending").
+     */
+    List<Order> findByStatus(String status);
 }

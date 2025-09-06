@@ -1,9 +1,7 @@
-// Tejarat Project/demo/src/main/java/ir/tejarattrd/oms/demo/demo/Controller/PageController.java
-
 package ir.tejarattrd.oms.demo.demo.Controller;
 
 import ir.tejarattrd.oms.demo.demo.DTO.LoginForm;
-import ir.tejarattrd.oms.demo.demo.DTO.SymbolDto; // ایمپورت کردن DTO
+import ir.tejarattrd.oms.demo.demo.DTO.SymbolDto;
 import ir.tejarattrd.oms.demo.demo.Entity.Customer;
 import ir.tejarattrd.oms.demo.demo.Service.CustomerService;
 import ir.tejarattrd.oms.demo.demo.Service.SymbolService;
@@ -17,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.stream.Collectors; // ایمپورت کردن Collectors
+import java.util.stream.Collectors;
 
 @Controller
 public class PageController {
@@ -35,7 +33,8 @@ public class PageController {
 
     @GetMapping("/login")
     public String loginPage(Model model) {
-        model.addAttribute("loginForm", new LoginForm());
+        // **تغییر کلیدی:** ایجاد یک نمونه از رکورد با مقادیر null برای فرم
+        model.addAttribute("loginForm", new LoginForm(null, null));
         return "home/login/login";
     }
 
@@ -65,7 +64,6 @@ public class PageController {
 
     @GetMapping("/order")
     public String orderPage(Model model){
-        // **مهم: ارسال لیست DTO به جای لیست Entity**
         List<SymbolDto> symbols = symbolService.getAllSymbols()
                 .stream()
                 .map(SymbolDto::new)
@@ -73,5 +71,10 @@ public class PageController {
 
         model.addAttribute("symbols", symbols);
         return "home/orderP/Order";
+    }
+    @GetMapping("/portfolio")
+    public String portfolioPage(Model model) {
+        // می‌توانید در اینجا اطلاعات اولیه کاربر مثل نام او را هم به صفحه بفرستید
+        return "home/portfolio/portfolio"; // آدرس فایل HTML جدید
     }
 }

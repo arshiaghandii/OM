@@ -10,13 +10,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker // فعال‌سازی وب‌سوکت و message broker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    // آدرس فایل: Tejarat Project/demo/src/main/java/ir/tejarattrd/oms/demo/demo/Config/WebSocketConfig.java
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        // فعال‌سازی یک message broker ساده در حافظه برای ارسال پیام‌ها به کلاینت‌ها
-        // کلاینت‌ها برای دریافت پیام باید روی مقاصدی با پیشوند /topic عضو شوند
-        registry.enableSimpleBroker("/topic");
-        // پیشوند مقصد برای پیام‌هایی که از کلاینت به سرور ارسال می‌شوند
+        // "/queue" را برای صف‌های پیام شخصی اضافه کن
+        registry.enableSimpleBroker("/topic", "/queue");
         registry.setApplicationDestinationPrefixes("/app");
+        // این خط برای فعال کردن مقاصد کاربری ضروری است
+        registry.setUserDestinationPrefix("/user");
     }
 
     @Override
