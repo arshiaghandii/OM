@@ -2,7 +2,7 @@
 
 package ir.tejarattrd.oms.demo.demo.Controller;
 
-import ir.tejarattrd.oms.demo.demo.DTO.SymbolDto; // **مهم: ایمپورت کردن DTO**
+import ir.tejarattrd.oms.demo.demo.DTO.SymbolDto;
 import ir.tejarattrd.oms.demo.demo.Entity.Symbol;
 import ir.tejarattrd.oms.demo.demo.Service.SymbolService;
 import org.springframework.http.ResponseEntity;
@@ -28,22 +28,21 @@ public class SymbolController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    // اندپوینت برای دریافت لیست نمادها (همچنان DTO برمی‌گرداند)
     @GetMapping("/api/symbols")
     public ResponseEntity<List<SymbolDto>> getAllSymbols() {
         List<SymbolDto> symbolDtos = symbolService.getAllSymbols()
                 .stream()
-                .map(SymbolDto::new) // تبدیل هر Symbol به SymbolDto
+                // With the new constructor, this now works perfectly.
+                .map(SymbolDto::new)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(symbolDtos);
     }
 
-    // اندپوینت برای ایجاد نماد جدید
     @PostMapping("/api/symbols")
     public ResponseEntity<SymbolDto> createSymbol(@RequestBody Symbol symbol) {
         Symbol savedSymbol = symbolService.saveSymbol(symbol);
 
-        // **تغییر کلیدی:** تبدیل Entity به DTO قبل از ارسال با وب‌سوکت
+        // This also works now.
         SymbolDto symbolDto = new SymbolDto(savedSymbol);
         messagingTemplate.convertAndSend("/topic/new-symbol", symbolDto);
 
@@ -64,14 +63,14 @@ public class SymbolController {
         double change = (random.nextDouble() - 0.5) * (currentVolume * 0.02);
         long newTradingVolume = Math.round(currentVolume + change);
 
-        symbolService.updateSymbolVolume(symbolToUpdate.getSymbolId(), newTradingVolume);
+        // --- FIX: Changed getSymbolId() to getId() ---
+        symbolService.updateSymbolVolume(symbolToUpdate.getId(), newTradingVolume);
+        Symbol updatedSymbolEntity = symbolService.getSymbolById(symbolToUpdate.getId());
+        // ---------------------------------------------
 
-        Symbol updatedSymbolEntity = symbolService.getSymbolById(symbolToUpdate.getSymbolId());
-
-        // **تغییر کلیدی و حیاتی: تبدیل Entity به DTO قبل از ارسال**
+        // And this works too.
         SymbolDto symbolDto = new SymbolDto(updatedSymbolEntity);
 
-        // ارسال DTO به جای Entity برای جلوگیری از خطا
         messagingTemplate.convertAndSend("/topic/symbols", symbolDto);
     }
 }

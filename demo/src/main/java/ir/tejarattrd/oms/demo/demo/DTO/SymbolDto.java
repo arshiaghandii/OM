@@ -4,13 +4,29 @@ import ir.tejarattrd.oms.demo.demo.Entity.Symbol;
 
 public class SymbolDto {
     private Long id;
-    private String name;
+    // --- FIX: Changed 'name' to 'companyName' to reflect the entity ---
+    private String companyName;
     private String description;
+    private double unitPrice;
+    private Long tradingVolume;
+
+    public SymbolDto(Symbol symbol) {
+        this.id = symbol.getId();
+        // --- FIX: Changed from the non-existent getName() to getCompanyName() ---
+        this.companyName = symbol.getCompanyName();
+        this.description = symbol.getDescription();
+        this.unitPrice = symbol.getUnitPrice();
+        this.tradingVolume = symbol.getTradingVolume();
+    }
+
+    public SymbolDto() {
+    }
 
     public static SymbolDto fromEntity(Symbol symbol) {
         SymbolDto dto = new SymbolDto();
         dto.setId(symbol.getId());
-        dto.setName(symbol.getName());
+        // --- FIX: Also changed it here ---
+        dto.setCompanyName(symbol.getCompanyName());
         dto.setDescription(symbol.getDescription());
         return dto;
     }
@@ -22,16 +38,23 @@ public class SymbolDto {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getName() {
-        return name;
+
+    // --- FIX: Renamed getter and setter for 'name' to 'companyName' ---
+    public String getCompanyName() {
+        return companyName;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
+
     public String getDescription() {
         return description;
     }
     public void setDescription(String description) {
         this.description = description;
     }
+    public double getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+    public Long getTradingVolume() { return tradingVolume; }
+    public void setTradingVolume(Long tradingVolume) { this.tradingVolume = tradingVolume; }
 }

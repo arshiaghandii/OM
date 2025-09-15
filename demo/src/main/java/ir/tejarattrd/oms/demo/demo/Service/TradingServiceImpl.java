@@ -49,7 +49,7 @@ public class TradingServiceImpl implements TradingService {
                 List.of(Order.OrderStatus.OPEN, Order.OrderStatus.PARTIALLY_FILLED)
         );
         openOrders.forEach(order -> {
-            OrderBook book = orderBooks.computeIfAbsent(order.getSymbol().getName(), s -> new OrderBook());
+            OrderBook book = orderBooks.computeIfAbsent(order.getSymbol().getCompanyName(), s -> new OrderBook());
             book.addOrder(order);
         });
         logger.info("{} عدد سفارش باز بارگذاری شد.", openOrders.size());
@@ -58,10 +58,10 @@ public class TradingServiceImpl implements TradingService {
     @Override
     @Transactional
     public Order placeNewOrder(Order order) {
-        logger.info("در حال پردازش سفارش جدید: {} {} {} @ {}", order.getSide(), order.getQuantity(), order.getSymbol().getName(), order.getPrice());
+        logger.info("در حال پردازش سفارش جدید: {} {} {} @ {}", order.getSide(), order.getQuantity(), order.getSymbol().getCompanyName(), order.getPrice());
         Order savedOrder = orderRepository.save(order);
 
-        MatchingEngine engine = matchingEngines.computeIfAbsent(savedOrder.getSymbol().getName(), symbol -> {
+        MatchingEngine engine = matchingEngines.computeIfAbsent(savedOrder.getSymbol().getCompanyName(), symbol -> {
             OrderBook book = orderBooks.computeIfAbsent(symbol, s -> new OrderBook());
             return new MatchingEngine(book);
         });
@@ -85,7 +85,7 @@ public class TradingServiceImpl implements TradingService {
         if (order.getStatus() != Order.OrderStatus.OPEN && order.getStatus() != Order.OrderStatus.PARTIALLY_FILLED) {
             throw new IllegalStateException("فقط سفارشات باز یا نیمه پر شده قابل لغو هستند.");
         }
-        OrderBook book = orderBooks.get(order.getSymbol().getName());
+        OrderBook book = orderBooks.get(order.getSymbol().getCompanyName());
         if (book != null) {
             book.removeOrder(order);
         }

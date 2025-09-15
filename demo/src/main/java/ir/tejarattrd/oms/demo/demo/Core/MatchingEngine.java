@@ -68,10 +68,11 @@ public class MatchingEngine {
                 Order orderInBook = orderIterator.next();
                 long tradeQuantity = Math.min(newOrder.getRemainingQuantity(), orderInBook.getRemainingQuantity());
 
-                // یک معامله جدید ایجاد می‌کنیم
+                // --- FIX START: از getCompanyName به جای getName استفاده شد ---
                 Trade trade = (newOrder.getSide() == Order.OrderSide.BUY) ?
-                        new Trade(newOrder.getSymbol().getName(), priceInBook, tradeQuantity, newOrder.getId(), orderInBook.getId()) :
-                        new Trade(newOrder.getSymbol().getName(), priceInBook, tradeQuantity, orderInBook.getId(), newOrder.getId());
+                        new Trade(newOrder.getSymbol().getCompanyName(), priceInBook, tradeQuantity, newOrder.getId(), orderInBook.getId()) :
+                        new Trade(newOrder.getSymbol().getCompanyName(), priceInBook, tradeQuantity, orderInBook.getId(), newOrder.getId());
+                // --- FIX END ---
                 result.addTrade(trade);
 
                 // حجم باقی‌مانده هر دو سفارش را آپدیت می‌کنیم

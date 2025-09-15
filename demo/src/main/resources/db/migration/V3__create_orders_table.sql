@@ -1,7 +1,6 @@
-
 CREATE TABLE orders (
-    -- شناسه منحصر به فرد هر سفارش
-    order_id BIGSERIAL PRIMARY KEY,
+    -- شناسه منحصر به فرد هر سفارش (تغییر از order_id به id)
+    id BIGSERIAL PRIMARY KEY,
 
     -- شناسه مشتری که این سفارش را ثبت کرده است
     customer_id BIGINT NOT NULL,
@@ -25,15 +24,14 @@ CREATE TABLE orders (
     status VARCHAR(50),
 
     -- تعریف کلید خارجی برای اتصال به جدول مشتریان
-    -- اگر یک مشتری حذف شود، سفارش‌های او نیز حذف خواهد شد (ON DELETE CASCADE)
     CONSTRAINT fk_customer
         FOREIGN KEY(customer_id)
         REFERENCES customers(id)
         ON DELETE CASCADE,
 
-    -- تعریف کلید خارجی برای اتصال به جدول نمادها
+    -- تعریف کلید خارجی برای اتصال به جدول نمادها (تغییر از symbol_id به id)
     CONSTRAINT fk_symbol
         FOREIGN KEY(symbol_id)
-        REFERENCES symbols(symbol_id)
+        REFERENCES symbols(id) -- <<-- این خط نیز اصلاح شد
         ON DELETE CASCADE
 );

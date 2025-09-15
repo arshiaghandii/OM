@@ -18,7 +18,7 @@ public class OrderDto {
     public static OrderDto fromEntity(Order order) {
         OrderDto dto = new OrderDto();
         dto.setId(order.getId());
-        dto.setSymbolName(order.getSymbol().getName());
+        dto.setSymbolName(order.getSymbol().getCompanyName());
         dto.setSide(order.getSide());
         dto.setQuantity(order.getQuantity());
         dto.setRemainingQuantity(order.getRemainingQuantity());
