@@ -7,7 +7,6 @@ import ir.tejarattrd.oms.demo.demo.Entity.Customer;
 import ir.tejarattrd.oms.demo.demo.Entity.Order;
 import ir.tejarattrd.oms.demo.demo.Entity.Symbol;
 import ir.tejarattrd.oms.demo.demo.Repository.CustomerRepository;
-import ir.tejarattrd.oms.demo.demo.Service.OrderService;
 import ir.tejarattrd.oms.demo.demo.Service.SymbolService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

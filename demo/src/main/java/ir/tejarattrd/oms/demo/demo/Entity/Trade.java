@@ -18,7 +18,7 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String symbol; // نام نماد برای دسترسی سریع
+    private String symbol;
     private BigDecimal price;
     private long quantity;
     private Long buyOrderId;

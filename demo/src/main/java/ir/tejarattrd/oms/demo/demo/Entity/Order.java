@@ -34,7 +34,7 @@ public class Order {
     @Column(nullable = false)
     private long remainingQuantity;
 
-    @Column(precision = 19, scale = 8)
+    @Column(precision = 19, scale = 8, nullable = false)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
@@ -49,9 +49,9 @@ public class Order {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
-        this.remainingQuantity = this.quantity; // در ابتدا حجم باقی‌مانده برابر با حجم کل است
+        this.remainingQuantity = this.quantity;
         if (this.status == null) {
-            this.status = OrderStatus.NEW; // وضعیت اولیه
+            this.status = OrderStatus.NEW;
         }
     }
 
