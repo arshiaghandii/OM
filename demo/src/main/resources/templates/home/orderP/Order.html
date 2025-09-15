@@ -78,7 +78,8 @@
     </div>
     <nav>
         <span class="user-info">کاربر: <span sec:authentication="name"></span></span>
-        <a href="/"><button>صفحه اصلی</button></a>
+        <a href="/order"><button>ثبت سفارش</button></a>
+        <a href="/portfolio"><button>سبد دارایی</button></a>
         <form th:action="@{/logout}" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button type="submit" class="logout">خروج</button>

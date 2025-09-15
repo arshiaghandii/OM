@@ -74,4 +74,13 @@ public class PageController {
         model.addAttribute("symbols", symbols);
         return "home/orderP/Order";
     }
+
+    // متد جدید برای صفحه پرتفوی
+    @GetMapping("/portfolio")
+    public String portfolioPage(Model model) {
+        // TODO: در این قسمت باید اطلاعات واقعی پرتفوی کاربر از سرویس مربوطه دریافت و به مدل اضافه شود.
+        // List<PortfolioItemDto> portfolioItems = portfolioService.getUserPortfolio(user);
+        // model.addAttribute("portfolioItems", portfolioItems);
+        return "home/portfolio/portfolio";
+    }
 }
