@@ -15,12 +15,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
+/*------------------------------------------------------------------------------------------*/
 @Service
 @RequiredArgsConstructor
 public class TradingServiceImpl implements TradingService {
 
     private static final Logger logger = LoggerFactory.getLogger(TradingServiceImpl.class);
+
+    public TradingServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
+        this.orderRepository = orderRepository;
+        this.tradeRepository = tradeRepository;
+    }
+
     private final OrderRepository orderRepository;
     private final TradeRepository tradeRepository;
 

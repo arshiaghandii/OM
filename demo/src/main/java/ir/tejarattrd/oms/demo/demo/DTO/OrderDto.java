@@ -1,49 +1,48 @@
 package ir.tejarattrd.oms.demo.demo.DTO;
 
 import ir.tejarattrd.oms.demo.demo.Entity.Order;
-import ir.tejarattrd.oms.demo.demo.Entity.Symbol;
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class OrderDto {
 
-        private Long orderId;
-        private String symbolCode; // به جای کل آبجکت Symbol، فقط کد آن را می‌فرستیم
-        private String orderType;
-        private Double quantity;
-        private Double totalPrice;
-        private LocalDateTime orderDate;
-        private String status;
+    private Long id;
+    private String symbolName;
+    private Order.OrderSide side;
+    private long quantity;
+    private long remainingQuantity;
+    private BigDecimal price;
+    private Order.OrderStatus status;
+    private LocalDateTime createdAt;
 
-        // سازنده‌ای برای تبدیل راحت Order Entity به OrderDto
-        public OrderDto(Order order) {
-        this.orderId = order.getOrderId();
-        this.symbolCode = order.getSymbol().getSymbolCode(); // Flattening the data
-        this.orderType = order.getOrderType();
-        this.quantity = order.getQuantity();
-        this.totalPrice = order.getTotalPrice();
-        this.orderDate = order.getOrderDate();
-        this.status = order.getStatus();
+    public static OrderDto fromEntity(Order order) {
+        OrderDto dto = new OrderDto();
+        dto.setId(order.getId());
+        dto.setSymbolName(order.getSymbol().getName());
+        dto.setSide(order.getSide());
+        dto.setQuantity(order.getQuantity());
+        dto.setRemainingQuantity(order.getRemainingQuantity());
+        dto.setPrice(order.getPrice());
+        dto.setStatus(order.getStatus());
+        dto.setCreatedAt(order.getCreatedAt());
+        return dto;
     }
 
-        // Getters and Setters for all fields...
-        public Long getOrderId() { return orderId; }
-        public void setOrderId(Long orderId) { this.orderId = orderId; }
-        public String getSymbolCode() { return symbolCode; }
-        public void setSymbolCode(String symbolCode) { this.symbolCode = symbolCode; }
-        public String getOrderType() { return orderType; }
-        public void setOrderType(String orderType) { this.orderType = orderType; }
-        public Double getQuantity() { return quantity; }
-        public void setQuantity(Double quantity) { this.quantity = quantity; }
-        public Double getTotalPrice() { return totalPrice; }
-        public void setTotalPrice(Double totalPrice) { this.totalPrice = totalPrice; }
-        public LocalDateTime getOrderDate() { return orderDate; }
-        public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
-        public String getStatus() { return status; }
-        public void setStatus(String status) { this.status = status; }
-
-/*-------------------------------------------------------------------------------------------------*/
-
-
-
-    }
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getSymbolName() { return symbolName; }
+    public void setSymbolName(String symbolName) { this.symbolName = symbolName; }
+    public Order.OrderSide getSide() { return side; }
+    public void setSide(Order.OrderSide side) { this.side = side; }
+    public long getQuantity() { return quantity; }
+    public void setQuantity(long quantity) { this.quantity = quantity; }
+    public long getRemainingQuantity() { return remainingQuantity; }
+    public void setRemainingQuantity(long remainingQuantity) { this.remainingQuantity = remainingQuantity; }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
+    public Order.OrderStatus getStatus() { return status; }
+    public void setStatus(Order.OrderStatus status) { this.status = status; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+}
