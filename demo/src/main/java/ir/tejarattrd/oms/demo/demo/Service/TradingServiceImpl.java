@@ -7,7 +7,6 @@ import ir.tejarattrd.oms.demo.demo.Entity.Order;
 import ir.tejarattrd.oms.demo.demo.Repository.OrderRepository;
 import ir.tejarattrd.oms.demo.demo.Repository.TradeRepository;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,23 +14,33 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-/*------------------------------------------------------------------------------------------*/
+
 @Service
-@RequiredArgsConstructor
 public class TradingServiceImpl implements TradingService {
 
     private static final Logger logger = LoggerFactory.getLogger(TradingServiceImpl.class);
+
+
+
+    // فیلدهای final توسط Lombok در سازنده قرار می‌گیرند
+    private final OrderRepository orderRepository;
+    private final TradeRepository tradeRepository;
 
     public TradingServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
         this.orderRepository = orderRepository;
         this.tradeRepository = tradeRepository;
     }
 
-    private final OrderRepository orderRepository;
-    private final TradeRepository tradeRepository;
-
     private final Map<String, OrderBook> orderBooks = new ConcurrentHashMap<>();
     private final Map<String, MatchingEngine> matchingEngines = new ConcurrentHashMap<>();
+
+    /*
+     * سازنده دستی حذف شد چون @RequiredArgsConstructor همین کار را انجام می‌دهد.
+     * public TradingServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
+     * this.orderRepository = orderRepository;
+     * this.tradeRepository = tradeRepository;
+     * }
+     */
 
     @PostConstruct
     public void init() {
