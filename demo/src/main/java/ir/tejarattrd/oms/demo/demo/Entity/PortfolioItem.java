@@ -1,7 +1,7 @@
 package ir.tejarattrd.oms.demo.demo.Entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+import java.math.BigDecimal; // ایمپورت کردن کلاس مورد نیاز
 
 @Entity
 @Table(name = "portfolio_items")
@@ -20,7 +20,12 @@ public class PortfolioItem {
     private Symbol symbol;
 
     @Column(nullable = false)
-    private int quantity;
+    private long quantity; // نوع داده به long تغییر کرد تا اعداد بزرگتر را پشتیبانی کند
+
+    // --- FIX: این فیلد کلیدی اضافه شد ---
+    @Column(name = "average_price", nullable = false, precision = 19, scale = 8)
+    private BigDecimal averagePrice;
+
 
     // ------------------------- Getters and Setters -------------------------
 
@@ -48,15 +53,20 @@ public class PortfolioItem {
         this.symbol = symbol;
     }
 
-    public int getQuantity() {
+    public long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(long quantity) {
         this.quantity = quantity;
     }
 
-    public void setCustomerId(Long id) {
+    // --- FIX: متدهای مربوط به فیلد جدید اضافه شد ---
+    public BigDecimal getAveragePrice() {
+        return averagePrice;
+    }
 
+    public void setAveragePrice(BigDecimal averagePrice) {
+        this.averagePrice = averagePrice;
     }
 }
