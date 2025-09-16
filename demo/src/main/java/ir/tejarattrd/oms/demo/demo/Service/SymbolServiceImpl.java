@@ -34,7 +34,7 @@ public class SymbolServiceImpl implements SymbolService {
     }
 
     @Override
-    public Symbol getSymbolByCode(String code) {
+    public Symbol getSymbolByCode(int code) {
         logger.info("Fetching symbol with code: {}", code);
         return symbolRepository.findBySymbolCode(code)
                 .orElseThrow(() -> new RuntimeException("نمادی با کد " + code + " پیدا نشد"));
@@ -43,7 +43,7 @@ public class SymbolServiceImpl implements SymbolService {
     @Override
     public Symbol saveSymbol(Symbol symbol) {
         logger.info("Saving new symbol with code: {}", symbol.getSymbolCode());
-        symbol.setLastPriceUpdate(LocalDateTime.now());
+        symbol.setLastPriceUpdate(LocalDateTime.now ());
         return symbolRepository.save(symbol);
     }
 

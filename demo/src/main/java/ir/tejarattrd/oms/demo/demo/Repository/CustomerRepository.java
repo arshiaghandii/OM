@@ -12,5 +12,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * پیدا کردن مشتری بر اساس نام کاربری یا ایمیل.
      * Spring Data JPA به صورت خودکار کوئری این متد را از روی نام آن تولید می‌کند.
      */
-    Optional<Customer> findByUsernameOrEmail(String username, String email);
+    Optional<Customer> findByUsername(String username);
 }

@@ -1,13 +1,21 @@
 package ir.tejarattrd.oms.demo.demo.Controller;
 
+
 import ir.tejarattrd.oms.demo.demo.DTO.LoginForm;
+import ir.tejarattrd.oms.demo.demo.DTO.RegisterForm;
 import ir.tejarattrd.oms.demo.demo.Service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:63342")
 public class AuthController {
 
     private final AuthService authService;
@@ -16,16 +24,20 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginForm loginForm) {
-        try {
-            // تولید توکن JWT
-            String token = authService.loginAndGetToken(loginForm.getUsernameOrEmail(), loginForm.getPassword());
-
-            // پاسخ به کلاینت شامل توکن
-            return ResponseEntity.ok().body("{\"token\": \"" + token + "\"}");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\"error\": \"" + e.getMessage() + "\"}");
-        }
+    // STABILITY: Added @Valid to trigger validation on the request body.
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterForm registerForm) {
+        authService.register(registerForm);
+        return ResponseEntity.ok(Map.of("message", "User registered successfully"));
     }
+
+    // STABILITY: Added @Valid to trigger validation on the request body.
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginForm loginForm) {
+        String token = authService.login(loginForm);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+        return ResponseEntity.ok().headers(headers).body(Map.of("token", token));
+    }
+
 }

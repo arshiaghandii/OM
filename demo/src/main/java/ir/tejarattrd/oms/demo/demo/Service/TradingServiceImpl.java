@@ -23,7 +23,7 @@ public class TradingServiceImpl implements TradingService {
 
 
     // فیلدهای final توسط Lombok در سازنده قرار می‌گیرند
-    private final OrderRepository orderRepository;
+    private final OrderRepository  orderRepository;
     private final TradeRepository tradeRepository;
 
     public TradingServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
@@ -33,14 +33,6 @@ public class TradingServiceImpl implements TradingService {
 
     private final Map<String, OrderBook> orderBooks = new ConcurrentHashMap<>();
     private final Map<String, MatchingEngine> matchingEngines = new ConcurrentHashMap<>();
-
-    /*
-     * سازنده دستی حذف شد چون @RequiredArgsConstructor همین کار را انجام می‌دهد.
-     * public TradingServiceImpl(OrderRepository orderRepository, TradeRepository tradeRepository) {
-     * this.orderRepository = orderRepository;
-     * this.tradeRepository = tradeRepository;
-     * }
-     */
 
     @PostConstruct
     public void init() {

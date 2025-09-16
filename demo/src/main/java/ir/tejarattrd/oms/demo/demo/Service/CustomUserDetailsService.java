@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
         // **اصلاح کلیدی:** ورودی usernameOrEmail به عنوان هر دو پارامتر ارسال می‌شود
         Customer customer = customerRepository
-                .findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .findByUsername(usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException("کاربری با این نام کاربری یا ایمیل پیدا نشد"));
 
         return User.builder()

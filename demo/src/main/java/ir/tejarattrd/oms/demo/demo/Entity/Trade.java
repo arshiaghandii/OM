@@ -1,17 +1,15 @@
 package ir.tejarattrd.oms.demo.demo.Entity;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "trades")
-@Getter
-@Setter
-@NoArgsConstructor
 public class Trade {
 
     @Id
@@ -21,16 +19,80 @@ public class Trade {
     private String symbol;
     private BigDecimal price;
     private long quantity;
-    private Long buyOrderId;
-    private Long sellOrderId;
-    private LocalDateTime executedAt;
+    private Long buyerId;
+    private Long sellerId;
+    private LocalDateTime timestamp;
 
-    public Trade(String symbol, BigDecimal price, long quantity, Long buyOrderId, Long sellOrderId) {
+    // FIX: A no-argument constructor is required for JPA entities.
+    public Trade() {
+    }
+
+    // FIX: Added a parameterized constructor to match the call from MatchingEngine.
+    // This resolves the compilation error by providing the constructor that the engine needs to create a trade.
+    public Trade(String symbol, BigDecimal price, long quantity, Long buyerId, Long sellerId) {
         this.symbol = symbol;
         this.price = price;
         this.quantity = quantity;
-        this.buyOrderId = buyOrderId;
-        this.sellOrderId = sellOrderId;
-        this.executedAt = LocalDateTime.now();
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
+    }
+
+    public Long getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(Long buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
+

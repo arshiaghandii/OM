@@ -31,7 +31,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer saveCustomer(Customer customer) {
-        customerRepository.findByUsernameOrEmail(customer.getUsername(), customer.getEmail())
+        customerRepository.findByUsername(customer.getUsername())
                 .ifPresent(existingCustomer -> {
                     throw new IllegalStateException("کاربری با این نام کاربری یا ایمیل از قبل وجود دارد.");
                 });
@@ -43,7 +43,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer updateCustomer(Long id, Customer customerDetails) {
         Customer existingCustomer = getCustomerById(id);
-        customerRepository.findByUsernameOrEmail(customerDetails.getUsername(), customerDetails.getEmail())
+        customerRepository.findByUsername(customerDetails.getUsername())
                 .ifPresent(anotherCustomer -> {
                     if (!anotherCustomer.getId().equals(id)) {
                         throw new IllegalStateException("نام کاربری یا ایمیل جدید به کاربر دیگری تعلق دارد.");

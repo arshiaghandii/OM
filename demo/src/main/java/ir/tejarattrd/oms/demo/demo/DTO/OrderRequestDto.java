@@ -1,37 +1,38 @@
 package ir.tejarattrd.oms.demo.demo.DTO;
 
 import ir.tejarattrd.oms.demo.demo.Entity.Order;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
-/**
- * این کلاس برای دریافت اطلاعات یک سفارش جدید از طریق درخواست‌های API استفاده می‌شود.
- */
-
+// NO-LOMBOK: Removed @Data
 public class OrderRequestDto {
+    @NotBlank(message = "Symbol cannot be blank")
+    private String symbol;
 
-    public Long getCustomerId() {
-        return customerId;
+    @NotNull(message = "Order side cannot be null")
+    private Order.OrderSide side;
+
+    @NotNull(message = "Price cannot be null")
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
+    private BigDecimal price;
+
+    @NotNull(message = "Quantity cannot be null")
+    @Positive(message = "Quantity must be positive")
+    private Long quantity;
+
+    // --- Getters and Setters ---
+
+    public String getSymbol() {
+        return symbol;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
-    }
-
-    public Long getSymbolId() {
-        return symbolId;
-    }
-
-    public void setSymbolId(Long symbolId) {
-        this.symbolId = symbolId;
-    }
-
-    public long getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
     }
 
     public Order.OrderSide getSide() {
@@ -50,10 +51,37 @@ public class OrderRequestDto {
         this.price = price;
     }
 
-    private Long customerId;
-    private Long symbolId;
-    private Order.OrderSide side; // باید یکی از مقادیر BUY یا SELL باشد
-    private long quantity;
-    private BigDecimal price;
+    public Long getQuantity() {
+        return quantity;
+    }
 
+    public void setQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
+    // --- equals, hashCode, toString ---
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderRequestDto that = (OrderRequestDto) o;
+        return Objects.equals(symbol, that.symbol) && side == that.side && Objects.equals(price, that.price) && Objects.equals(quantity, that.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol, side, price, quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderRequestDto{" +
+                "symbol='" + symbol + '\'' +
+                ", side=" + side +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
+

@@ -11,5 +11,5 @@ public interface SymbolRepository extends JpaRepository<Symbol, Long> {
     /**
      * پیدا کردن نماد بر اساس کد آن.
      */
-    Optional<Symbol> findBySymbolCode(String symbolCode);
+    Optional<Symbol> findBySymbolCode(int symbolCode);
 }

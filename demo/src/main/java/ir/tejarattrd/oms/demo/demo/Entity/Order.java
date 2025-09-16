@@ -17,27 +17,30 @@ public class Order {
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "symbol_id", nullable = false)
+    @JoinColumn(name = "symbol_id", referencedColumnName = "symbol_id", nullable = false) // <-- اضافه کردن referencedColumnName
     private Symbol symbol;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "order_type", nullable = false) // <-- اضافه کردن نام ستون
     private OrderSide side; // BUY or SELL
 
     @Column(nullable = false)
     private long quantity;
 
-    @Column(nullable = false)
+    @Column(name = "remaining_quantity", nullable = false) // <-- اضافه کردن نام ستون
     private long remainingQuantity;
 
-    @Column(precision = 19, scale = 8, nullable = false)
+    @Column(name = "total_price", precision = 19, scale = 8, nullable = false)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
 
+    // --- FIX: نگاشت فیلد createdAt به ستون order_date ---
+    @Column(name = "order_date")
     private LocalDateTime createdAt;
+    // --- FIX END ---
 
     @Version
     private Long version;
@@ -54,7 +57,8 @@ public class Order {
     public enum OrderSide { BUY, SELL }
     public enum OrderStatus { NEW, OPEN, PARTIALLY_FILLED, FILLED, CANCELED }
 
-    // --- Getters and Setters (جایگزین Lombok) ---
+    // --- Getters and Setters ---
+    // (بقیه کدها بدون تغییر باقی می‌مانند)
 
     public Long getId() {
         return id;

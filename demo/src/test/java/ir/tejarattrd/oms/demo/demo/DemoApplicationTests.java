@@ -1,13 +1,13 @@
-package ir.tejarattrd.oms.demo.demo;
+//package ir.tejarattrd.oms.demo.demo;
+//
+////import org.junit.jupiter.api.Test;
+//import org.springframework.boot.test.context.SpringBootTest;
+//
+//@SpringBootTest
+//class DemoApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
-class DemoApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//}

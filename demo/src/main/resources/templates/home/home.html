@@ -54,8 +54,8 @@
     </div>
     <nav>
         <div sec:authorize="!isAuthenticated()">
-            <a href="/login"><button>ورود</button></a>
-            <a href="/register"><button>ثبت‌نام</button></a>
+            <a th:href="@{/login}"><button>ورود</button></a>
+            <a th:href="@{/register}"><button>ثبت‌نام</button></a>
         </div>
         <div sec:authorize="isAuthenticated()">
             <span class="user-info">کاربر: <span sec:authentication="name"></span></span>
