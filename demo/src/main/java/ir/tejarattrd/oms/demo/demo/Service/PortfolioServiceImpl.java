@@ -52,29 +52,56 @@ public class PortfolioServiceImpl implements PortfolioService {
                 .orElseThrow(() -> new RuntimeException("فروشنده پیدا نشد"));
 
         BigDecimal tradeValue = trade.getPrice().multiply(new BigDecimal(trade.getQuantity()));
+        long tradeQuantity = trade.getQuantity();
 
-        // به‌روزرسانی پورتفولیوی فروشنده
+        // --- به‌روزرسانی پورتفولیوی فروشنده ---
         seller.setBalance(seller.getBalance().add(tradeValue));
         PortfolioItem sellerItem = portfolioItemRepository.findByCustomerIdAndSymbol(seller.getId(), trade.getSymbol())
                 .orElseThrow(() -> new IllegalStateException("فروشنده سهام مورد نظر را برای فروش ندارد."));
-        sellerItem.setQuantity(sellerItem.getQuantity() - trade.getQuantity());
 
-        // به‌روزرسانی پورتفولیوی خریدار
+        // اگر فروشنده تمام سهامش را فروخت، آیتم را حذف می‌کنیم
+        if (sellerItem.getQuantity() - tradeQuantity == 0) {
+            portfolioItemRepository.delete(sellerItem);
+        } else {
+            sellerItem.setQuantity(sellerItem.getQuantity() - tradeQuantity);
+            portfolioItemRepository.save(sellerItem);
+        }
+        customerRepository.save(seller);
+
+
+        // --- به‌روزرسانی پورتفولیوی خریدار ---
         buyer.setBalance(buyer.getBalance().subtract(tradeValue));
         PortfolioItem buyerItem = portfolioItemRepository.findByCustomerIdAndSymbol(buyer.getId(), trade.getSymbol())
                 .orElseGet(() -> {
                     PortfolioItem newItem = new PortfolioItem();
                     newItem.setCustomerId(buyer.getId());
                     newItem.setSymbol(trade.getSymbol());
-                    newItem.setQuantity(0L); // شروع با مقدار صفر
+                    newItem.setQuantity(0L);
+                    // برای آیتم جدید، قیمت میانگین اولیه صفر است
+                    newItem.setAveragePrice(BigDecimal.ZERO);
                     return newItem;
                 });
-        buyerItem.setQuantity(buyerItem.getQuantity() + trade.getQuantity());
 
-        // ذخیره تغییرات
-        customerRepository.save(seller);
+        // === منطق کلیدی محاسبه قیمت میانگین جدید ===
+        long oldQuantity = buyerItem.getQuantity();
+        BigDecimal oldAveragePrice = buyerItem.getAveragePrice();
+
+        // (تعداد قدیم * میانگین قدیم) + (تعداد جدید * قیمت جدید)
+        BigDecimal oldTotalValue = oldAveragePrice.multiply(BigDecimal.valueOf(oldQuantity));
+        BigDecimal tradeTotalValue = trade.getPrice().multiply(BigDecimal.valueOf(tradeQuantity));
+        BigDecimal newTotalValue = oldTotalValue.add(tradeTotalValue);
+
+        long newQuantity = oldQuantity + tradeQuantity;
+
+        // میانگین جدید = ارزش کل جدید / تعداد کل جدید
+        // حتما باید دقت تقسیم (scale) و روش گرد کردن (RoundingMode) را مشخص کنیم
+        BigDecimal newAveragePrice = newTotalValue.divide(BigDecimal.valueOf(newQuantity), 8, java.math.RoundingMode.HALF_UP);
+
+        buyerItem.setQuantity(newQuantity);
+        buyerItem.setAveragePrice(newAveragePrice); // <-- ذخیره قیمت میانگین جدید
+
+        // ذخیره تغییرات خریدار
         customerRepository.save(buyer);
-        portfolioItemRepository.save(sellerItem);
         portfolioItemRepository.save(buyerItem);
     }
 }

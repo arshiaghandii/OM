@@ -9,7 +9,7 @@ CREATE TABLE portfolio_items (
     customer_id BIGINT NOT NULL,
     symbol_id BIGINT NOT NULL,
     quantity NUMERIC(18, 2) NOT NULL,
-
+average_price NUMERIC(19, 8) NOT NULL,
     -- تعریف کلیدهای خارجی
     CONSTRAINT fk_customer
         FOREIGN KEY(customer_id)

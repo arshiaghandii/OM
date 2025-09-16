@@ -1,5 +1,7 @@
 package ir.tejarattrd.oms.demo.demo.DTO;
 
+import ir.tejarattrd.oms.demo.demo.Entity.PortfolioItem;
+
 public class PortfolioItemDto {
     private String symbolCode;
     private String companyName;
@@ -17,6 +19,10 @@ public class PortfolioItemDto {
         this.quantity = quantity;
         this.currentValue = currentValue;
         this.profitLoss = profitLoss;
+    }
+
+    public PortfolioItemDto(PortfolioItem portfolioItem) {
+        
     }
 
     // --- Getters and Setters ---

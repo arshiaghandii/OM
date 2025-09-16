@@ -3,6 +3,8 @@
 package ir.tejarattrd.oms.demo.demo.Entity;
 
 import jakarta.persistence.*; // <-- Table را از اینجا import کنید
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 // --- FIX: نام جدول به صراحت مشخص شد ---
@@ -26,7 +28,7 @@ public class Symbol {
     private String market;
 
     @Column(name = "unit_price")
-    private double unitPrice;
+    private BigDecimal unitPrice;
 
     @Column(name = "trading_volume")
     private Long tradingVolume;
@@ -70,11 +72,11 @@ public class Symbol {
         this.market = market;
     }
 
-    public double getUnitPrice() {
+    public BigDecimal getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
     }
 

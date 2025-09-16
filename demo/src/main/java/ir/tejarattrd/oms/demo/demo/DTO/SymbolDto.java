@@ -2,12 +2,14 @@ package ir.tejarattrd.oms.demo.demo.DTO;
 
 import ir.tejarattrd.oms.demo.demo.Entity.Symbol;
 
+import java.math.BigDecimal;
+
 public class SymbolDto {
     private Long id;
     // --- FIX: Changed 'name' to 'companyName' to reflect the entity ---
     private String companyName;
     private String description;
-    private double unitPrice;
+    private BigDecimal unitPrice;
     private Long tradingVolume;
 
     public SymbolDto(Symbol symbol) {
@@ -53,8 +55,8 @@ public class SymbolDto {
     public void setDescription(String description) {
         this.description = description;
     }
-    public double getUnitPrice() { return unitPrice; }
-    public void setUnitPrice(double unitPrice) { this.unitPrice = unitPrice; }
+    public BigDecimal getUnitPrice() { return unitPrice; }
+    public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
     public Long getTradingVolume() { return tradingVolume; }
     public void setTradingVolume(Long tradingVolume) { this.tradingVolume = tradingVolume; }
 }

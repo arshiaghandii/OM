@@ -1,6 +1,7 @@
 package ir.tejarattrd.oms.demo.demo.Entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "portfolio_items")
@@ -53,5 +54,9 @@ public class PortfolioItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setCustomerId(Long id) {
+
     }
 }
