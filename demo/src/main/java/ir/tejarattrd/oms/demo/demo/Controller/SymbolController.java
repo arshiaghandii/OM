@@ -64,8 +64,8 @@ public class SymbolController {
         long newTradingVolume = Math.round(currentVolume + change);
 
         // --- FIX: Changed getSymbolId() to getId() ---
-        symbolService.updateSymbolVolume(symbolToUpdate.getId(), newTradingVolume);
-        Symbol updatedSymbolEntity = symbolService.getSymbolById(symbolToUpdate.getId());
+        symbolService.updateSymbolVolume(symbolToUpdate.getSymbol_id(), newTradingVolume);
+        Symbol updatedSymbolEntity = symbolService.getSymbolById(symbolToUpdate.getSymbol_id());
         // ---------------------------------------------
 
         // And this works too.

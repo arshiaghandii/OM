@@ -13,8 +13,7 @@ public class SymbolDto {
     private Long tradingVolume;
 
     public SymbolDto(Symbol symbol) {
-        this.id = symbol.getId();
-        // --- FIX: Changed from the non-existent getName() to getCompanyName() ---
+        this.id = symbol.getSymbol_id();
         this.companyName = symbol.getCompanyName();
         this.description = symbol.getDescription();
         this.unitPrice = symbol.getUnitPrice();
@@ -26,7 +25,7 @@ public class SymbolDto {
 
     public static SymbolDto fromEntity(Symbol symbol) {
         SymbolDto dto = new SymbolDto();
-        dto.setId(symbol.getId());
+        dto.setId(symbol.getSymbol_id());
         // --- FIX: Also changed it here ---
         dto.setCompanyName(symbol.getCompanyName());
         dto.setDescription(symbol.getDescription());

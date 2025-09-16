@@ -7,6 +7,8 @@ import jakarta.persistence.*; // <-- Table را از اینجا import کنید
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 // --- FIX: نام جدول به صراحت مشخص شد ---
 @Entity
 @Table(name = "symbols")
@@ -16,7 +18,7 @@ public class Symbol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "symbol_id")
-    private Long id;
+    private Long symbol_id;
 
     @Column(name = "symbol_code")
     private int symbolCode;
@@ -40,12 +42,12 @@ public class Symbol {
 
     // --- Getters and Setters (بدون تغییر) ---
     // ... (بقیه کدها)
-    public Long getId() {
-        return id;
+    public Long getSymbol_id() {
+        return symbol_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSymbol_id(Long symbol_id) {
+        this.symbol_id = symbol_id;
     }
 
     public int getSymbolCode() {

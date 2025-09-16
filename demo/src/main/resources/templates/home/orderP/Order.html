@@ -62,8 +62,8 @@
         .status-cancelled { background-color: #fbebed; color: var(--sell-red); }
         .order-type-buy { color: var(--buy-green); font-weight: 600; }
         .order-type-sell { color: var(--sell-red); font-weight: 600; }
-        .select-symbol-btn { background-color: var(--secondary-blue); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-family: var(--font-family); transition: background-color 0.2s; }
-        .select-symbol-btn:hover { background-color: var(--primary-blue); }
+        .select-companyName-btn { background-color: var(--secondary-blue); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; font-family: var(--font-family); transition: background-color 0.2s; }
+        .select-companyName-btn:hover { background-color: var(--primary-blue); }
         @media (max-width: 576px) {
             header { flex-direction: column; gap: 1rem; padding: 1rem; }
             main { padding: 1.5rem; } .card { padding: 1.5rem; } h2 { font-size: 1.4rem; }
@@ -97,8 +97,8 @@
                 <button type="button" class="sell" onclick="setOrderType('sell')">فروش</button>
             </div>
             <div class="form-group">
-                <label for="symbol">نماد</label>
-                <input type="text" id="symbol" name="symbol" placeholder="نماد را از لیست انتخاب کنید" readonly>
+                <label for="companyName">نماد</label>
+                <input type="text" id="companyName" name="companyName" placeholder="نماد را از لیست انتخاب کنید" readonly>
             </div>
             <div class="form-group">
                 <label for="quantity">تعداد</label>
@@ -131,13 +131,13 @@
                     </tr>
                     </thead>
                     <tbody id="symbols-tbody">
-                    <tr th:each="symbol : ${symbols}" th:id="'symbol-' + ${symbol.symbolId}">
-                        <td th:text="${symbol.symbolCode}"></td>
-                        <td th:text="${symbol.companyName}"></td>
-                        <td class="price-cell" th:text="${#numbers.formatDecimal(symbol.unitPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-                        <td class="volume-cell" th:text="${#numbers.formatDecimal(symbol.tradingVolume, 0, 'COMMA', 0, 'POINT')}"></td>
+                    <tr th:each="companyName : ${symbols}" th:id="'companyName-' + ${companyName.symbolId}">
+                        <td th:text="${companyName.symbolCode}"></td>
+                        <td th:text="${companyName.companyName}"></td>
+                        <td class="price-cell" th:text="${#numbers.formatDecimal(companyName.unitPrice, 0, 'COMMA', 0, 'POINT')}"></td>
+                        <td class="volume-cell" th:text="${#numbers.formatDecimal(companyName.tradingVolume, 0, 'COMMA', 0, 'POINT')}"></td>
                         <td>
-                            <button class="select-symbol-btn" th:onclick="selectSymbol([[${symbol.symbolCode}]], [[${symbol.unitPrice}]])">
+                            <button class="select-companyName-btn" th:onclick="selectSymbol([[${companyName.symbolCode}]], [[${companyName.unitPrice}]])">
                                 انتخاب
                             </button>
                         </td>
@@ -184,7 +184,7 @@
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/symbols', (symbolUpdate) => updateSymbolInTable(JSON.parse(symbolUpdate.body)));
-            stompClient.subscribe('/topic/new-symbol', (newSymbol) => addSymbolToTable(JSON.parse(newSymbol.body)));
+            stompClient.subscribe('/topic/new-companyName', (newSymbol) => addSymbolToTable(JSON.parse(newSymbol.body)));
             stompClient.subscribe('/topic/new-order', (newOrder) => addOrderToTable(JSON.parse(newOrder.body), true));
         });
     }
@@ -196,18 +196,18 @@
     }
 
     // --- Symbols Table Management ---
-    function addSymbolToTable(symbol) {
+    function addSymbolToTable(companyName) {
         const tbody = document.getElementById('symbols-tbody');
-        if (!document.getElementById(`symbol-${symbol.symbolId}`)) {
+        if (!document.getElementById(`companyName-${companyName.symbolId}`)) {
             const tr = document.createElement('tr');
-            tr.id = `symbol-${symbol.symbolId}`;
+            tr.id = `companyName-${companyName.symbolId}`;
             tr.innerHTML = `
-                <td>${symbol.symbolCode}</td>
-                <td>${symbol.companyName}</td>
-                <td class="price-cell">${formatPrice(symbol.unitPrice)}</td>
-                <td class="volume-cell">${formatPrice(symbol.tradingVolume)}</td>
+                <td>${companyName.symbolCode}</td>
+                <td>${companyName.companyName}</td>
+                <td class="price-cell">${formatPrice(companyName.unitPrice)}</td>
+                <td class="volume-cell">${formatPrice(companyName.tradingVolume)}</td>
                 <td>
-                    <button class="select-symbol-btn" onclick="selectSymbol('${symbol.symbolCode}', '${symbol.unitPrice}')">
+                    <button class="select-companyName-btn" onclick="selectSymbol('${companyName.symbolCode}', '${companyName.unitPrice}')">
                         انتخاب
                     </button>
                 </td>
@@ -216,19 +216,19 @@
         }
     }
 
-    function updateSymbolInTable(symbol) {
-        const row = document.getElementById(`symbol-${symbol.symbolId}`);
+    function updateSymbolInTable(companyName) {
+        const row = document.getElementById(`companyName-${companyName.symbolId}`);
         if (row) {
             const priceCell = row.cells[2];
             const volumeCell = row.cells[3];
             const oldPrice = parseFloat(priceCell.textContent.replace(/,/g, '')) || 0;
 
-            priceCell.textContent = formatPrice(symbol.unitPrice);
-            volumeCell.textContent = formatPrice(symbol.tradingVolume);
+            priceCell.textContent = formatPrice(companyName.unitPrice);
+            volumeCell.textContent = formatPrice(companyName.tradingVolume);
 
             priceCell.classList.remove('price-up', 'price-down');
-            if (symbol.unitPrice > oldPrice) priceCell.classList.add('price-up');
-            else if (symbol.unitPrice < oldPrice) priceCell.classList.add('price-down');
+            if (companyName.unitPrice > oldPrice) priceCell.classList.add('price-up');
+            else if (companyName.unitPrice < oldPrice) priceCell.classList.add('price-down');
             setTimeout(() => priceCell.classList.remove('price-up', 'price-down'), 1000);
         }
     }
@@ -272,7 +272,7 @@
 
     // --- Form Logic ---
     const orderFormCard = document.getElementById('orderFormCard');
-    const symbolInput = document.getElementById('symbol');
+    const symbolInput = document.getElementById('companyName');
     const unitPriceInput = document.getElementById('unit_price');
     const quantityInput = document.getElementById('quantity');
     const totalPriceInput = document.getElementById('total_price');

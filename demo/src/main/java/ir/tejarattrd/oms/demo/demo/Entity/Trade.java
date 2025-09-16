@@ -16,7 +16,7 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String symbol;
+    private String companyName;
     private BigDecimal price;
     private long quantity;
     private Long buyerId;
@@ -29,8 +29,8 @@ public class Trade {
 
     // FIX: Added a parameterized constructor to match the call from MatchingEngine.
     // This resolves the compilation error by providing the constructor that the engine needs to create a trade.
-    public Trade(String symbol, BigDecimal price, long quantity, Long buyerId, Long sellerId) {
-        this.symbol = symbol;
+    public Trade(String companyName, BigDecimal price, long quantity, Long buyerId, Long sellerId) {
+        this.companyName = companyName;
         this.price = price;
         this.quantity = quantity;
         this.buyerId = buyerId;
@@ -47,12 +47,12 @@ public class Trade {
         this.id = id;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
     public BigDecimal getPrice() {

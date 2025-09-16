@@ -1,7 +1,7 @@
 package ir.tejarattrd.oms.demo.demo.Service;
 
 import ir.tejarattrd.oms.demo.demo.DTO.PortfolioItemDto;
-import ir.tejarattrd.oms.demo.demo.DTO.PortfolioResponseDto; // FIX: Import changed to the correct DTO
+import ir.tejarattrd.oms.demo.demo.DTO.PortfolioResponseDto;
 import ir.tejarattrd.oms.demo.demo.Entity.Customer;
 import ir.tejarattrd.oms.demo.demo.Entity.PortfolioItem;
 import ir.tejarattrd.oms.demo.demo.Entity.Trade;
@@ -11,12 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * این کلاس، پیاده‌سازی منطق مدیریت پورتفولیو است.
- */
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
 
@@ -29,17 +27,15 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    // FIX: The method signature now returns the correct DTO type.
     public PortfolioResponseDto getPortfolioForCustomer(String username) {
         Customer customer = customerRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("مشتری پیدا نشد: " + username));
 
         List<PortfolioItem> items = portfolioItemRepository.findByCustomerId(customer.getId());
         List<PortfolioItemDto> itemDtos = items.stream()
-                .map(PortfolioItemDto::new) // This line now compiles correctly.
+                .map(PortfolioItemDto::new)
                 .collect(Collectors.toList());
 
-        // FIX: A new instance of the correct DTO is returned.
         return new PortfolioResponseDto(customer.getBalance(), itemDtos);
     }
 
@@ -56,7 +52,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         // --- به‌روزرسانی پورتفولیوی فروشنده ---
         seller.setBalance(seller.getBalance().add(tradeValue));
-        PortfolioItem sellerItem = portfolioItemRepository.findByCustomerIdAndSymbol(seller.getId(), trade.getSymbol())
+        PortfolioItem sellerItem = portfolioItemRepository.findByCustomerIdAndSymbolId(seller.getId(), trade.getSellerId())
                 .orElseThrow(() -> new IllegalStateException("فروشنده سهام مورد نظر را برای فروش ندارد."));
 
         // اگر فروشنده تمام سهامش را فروخت، آیتم را حذف می‌کنیم
@@ -71,14 +67,15 @@ public class PortfolioServiceImpl implements PortfolioService {
 
         // --- به‌روزرسانی پورتفولیوی خریدار ---
         buyer.setBalance(buyer.getBalance().subtract(tradeValue));
-        PortfolioItem buyerItem = portfolioItemRepository.findByCustomerIdAndSymbol(buyer.getId(), trade.getSymbol())
+        PortfolioItem buyerItem = portfolioItemRepository.findByCustomerIdAndSymbolId(buyer.getId(), trade.getBuyerId())
                 .orElseGet(() -> {
                     PortfolioItem newItem = new PortfolioItem();
-                    newItem.setCustomerId(buyer.getId());
-                    newItem.setSymbol(trade.getSymbol());
+                    // --- FIX: از متد جدید و صحیح استفاده شد ---
+                    newItem.setCustomer(buyer);
+                    // --- FIX END ---
+                    newItem.setSymbol(trade.getCompanyName());
                     newItem.setQuantity(0L);
-                    // برای آیتم جدید، قیمت میانگین اولیه صفر است
-                    newItem.setAveragePrice(BigDecimal.ZERO);
+                    newItem.setAveragePrice(BigDecimal.ZERO); // مقدار اولیه برای محاسبه
                     return newItem;
                 });
 
@@ -86,7 +83,6 @@ public class PortfolioServiceImpl implements PortfolioService {
         long oldQuantity = buyerItem.getQuantity();
         BigDecimal oldAveragePrice = buyerItem.getAveragePrice();
 
-        // (تعداد قدیم * میانگین قدیم) + (تعداد جدید * قیمت جدید)
         BigDecimal oldTotalValue = oldAveragePrice.multiply(BigDecimal.valueOf(oldQuantity));
         BigDecimal tradeTotalValue = trade.getPrice().multiply(BigDecimal.valueOf(tradeQuantity));
         BigDecimal newTotalValue = oldTotalValue.add(tradeTotalValue);
@@ -94,15 +90,13 @@ public class PortfolioServiceImpl implements PortfolioService {
         long newQuantity = oldQuantity + tradeQuantity;
 
         // میانگین جدید = ارزش کل جدید / تعداد کل جدید
-        // حتما باید دقت تقسیم (scale) و روش گرد کردن (RoundingMode) را مشخص کنیم
-        BigDecimal newAveragePrice = newTotalValue.divide(BigDecimal.valueOf(newQuantity), 8, java.math.RoundingMode.HALF_UP);
+        BigDecimal newAveragePrice = newTotalValue.divide(BigDecimal.valueOf(newQuantity), 8, RoundingMode.HALF_UP);
 
         buyerItem.setQuantity(newQuantity);
-        buyerItem.setAveragePrice(newAveragePrice); // <-- ذخیره قیمت میانگین جدید
+        buyerItem.setAveragePrice(newAveragePrice); // ذخیره میانگین جدید
 
         // ذخیره تغییرات خریدار
         customerRepository.save(buyer);
         portfolioItemRepository.save(buyerItem);
     }
 }
-
