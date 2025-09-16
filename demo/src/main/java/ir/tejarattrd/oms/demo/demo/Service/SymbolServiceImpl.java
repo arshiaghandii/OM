@@ -5,6 +5,7 @@ import ir.tejarattrd.oms.demo.demo.Repository.SymbolRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -54,28 +55,33 @@ public class SymbolServiceImpl implements SymbolService {
         existingSymbol.setCompanyName(symbolDetails.getCompanyName());
         existingSymbol.setMarket(symbolDetails.getMarket());
         existingSymbol.setUnitPrice(symbolDetails.getUnitPrice());
+        // **مهم: حجم معاملات هم در این متد آپدیت می‌شود**
+        if (symbolDetails.getTradingVolume() != null) {
+            existingSymbol.setTradingVolume(symbolDetails.getTradingVolume());
+        }
         existingSymbol.setLastPriceUpdate(LocalDateTime.now());
 
+        return symbolRepository.save(existingSymbol);
+    }
+
+    @Override
+    public Symbol updateSymbolVolume(Long id, Long newVolume) {
+        Symbol existingSymbol = getSymbolById(id);
+        existingSymbol.setTradingVolume(newVolume);
+        existingSymbol.setLastPriceUpdate(LocalDateTime.now());
         return symbolRepository.save(existingSymbol);
     }
 
     /**
      * این متد فقط قیمت یک نماد را بر اساس شناسه آن به‌روزرسانی می‌کند.
-     * این متد اختصاصی برای جلوگیری از خطا و افزایش خوانایی کد ایجاد شده است.
      */
     @Override
-    public Symbol updateSymbolVolume(Long id, Long newVolume) {
-        // ابتدا نماد موجود را از دیتابیس پیدا می‌کنیم
+    public Symbol updateSymbolPrice(Long id, BigDecimal newPrice) {
         Symbol existingSymbol = getSymbolById(id);
-
-        // فقط حجم معاملات و تاریخ آپدیت را تغییر می‌دهیم
-        existingSymbol.setTradingVolume(newVolume);
+        existingSymbol.setUnitPrice(newPrice);
         existingSymbol.setLastPriceUpdate(LocalDateTime.now());
-
-        // تغییرات را ذخیره کرده و نتیجه را برمی‌گردانیم
         return symbolRepository.save(existingSymbol);
     }
-
 
     @Override
     public void deleteSymbol(Long id) {
